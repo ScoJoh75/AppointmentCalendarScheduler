@@ -14,7 +14,8 @@
         </font>
     </Label>
     <Button fx:id="customerButton" alignment="CENTER" layoutX="130.0" layoutY="60.0" mnemonicParsing="false"
-            prefHeight="25.0" prefWidth="140.0" text="Manage Customers" textAlignment="RIGHT">
+            prefHeight="25.0" prefWidth="140.0" text="Manage Customers" textAlignment="RIGHT"
+            onAction="#customerHandler">
         <tooltip>
             <Tooltip text="Add, Update, and Remove Customers"/>
         </tooltip>
