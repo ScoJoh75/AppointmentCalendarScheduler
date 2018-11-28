@@ -3,11 +3,10 @@ package model;
 public class Consultant {
     private int Id;
     private String userName;
-    private String passWord;
 
     public Consultant () {
 
-    }
+    } // constructor
 
     // Getters & Setters
     public int getId() {
@@ -26,11 +25,4 @@ public class Consultant {
         this.userName = userName;
     }
 
-    public String getPassWord() {
-        return passWord;
-    }
-
-    public void setPassWord(String passWord) {
-        this.passWord = passWord;
-    }
 } // end Consultant Class
