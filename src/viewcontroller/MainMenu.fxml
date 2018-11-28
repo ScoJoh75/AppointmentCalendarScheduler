@@ -15,19 +15,21 @@
     </Label>
     <Button fx:id="customerButton" alignment="CENTER" layoutX="130.0" layoutY="60.0" mnemonicParsing="false"
             prefHeight="25.0" prefWidth="140.0" text="Manage Customers" textAlignment="RIGHT"
-            onAction="#customerHandler">
+            onAction="#choiceHandler">
         <tooltip>
             <Tooltip text="Add, Update, and Remove Customers"/>
         </tooltip>
     </Button>
     <Button fx:id="appointmentButton" alignment="CENTER" layoutX="130.0" layoutY="100.0" mnemonicParsing="false"
-            prefHeight="25.0" prefWidth="140.0" text="Manage Appointments" textAlignment="RIGHT">
+            prefHeight="25.0" prefWidth="140.0" text="Manage Appointments" textAlignment="RIGHT"
+            onAction="#choiceHandler">
         <tooltip>
             <Tooltip text="Add, Update, and Delete Appointments"/>
         </tooltip>
     </Button>
     <Button fx:id="reportButton" alignment="CENTER" layoutX="130.0" layoutY="140.0" mnemonicParsing="false"
-            prefHeight="25.0" prefWidth="140.0" text="View Reports" textAlignment="RIGHT">
+            prefHeight="25.0" prefWidth="140.0" text="View Reports" textAlignment="RIGHT"
+            onAction="#choiceHandler">
         <tooltip>
             <Tooltip text="View Various Reports"/>
         </tooltip>

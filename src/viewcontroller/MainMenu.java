@@ -20,23 +20,36 @@ public class MainMenu {
     private Button customerButton;
 
     @FXML
-    private Button reportButton;
-
-    @FXML
     private Button appointmentButton;
-
+    
+    @FXML
+    private Button reportButton;
+    
     @FXML
     private Label appointmentAlert;
 
-    public void customerHandler(ActionEvent actionEvent) throws IOException {
+    public void choiceHandler(ActionEvent actionEvent) throws IOException {
         Stage stage;
         Parent root;
+        String choice;
+
         stage = (Stage) customerButton.getScene().getWindow();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("CustomerScreen.fxml"));
+
+        if (actionEvent.getSource() == customerButton) {
+            choice = "CustomerScreen";
+            stage.setTitle("Customer Database");
+        } else if (actionEvent.getSource() == appointmentButton) {
+            choice = "AppointmentScreen";
+            stage.setTitle("Appointment Database");
+        } else {
+            choice = "ReportScreen";
+            stage.setTitle("System Reports");
+        } // end if
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(choice + ".fxml"));
         root = loader.load();
         Scene scene = new Scene(root);
-        stage.setTitle("Customer Database");
         stage.setScene(scene);
         stage.show();
-    }
-}
+    } // end customerHandler
+} // end MainMenu
