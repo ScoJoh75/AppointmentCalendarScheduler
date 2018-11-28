@@ -18,4 +18,6 @@ public class MainMenu {
     @FXML
     private Button appointmentButton;
 
+    @FXML
+    private Label appointmentAlert;
 }

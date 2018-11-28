@@ -40,14 +40,14 @@ public class LoginScreen implements Initializable {
 
 
     @FXML
-    public void processLogin(ActionEvent event) throws IOException{
+    public void processLogin(ActionEvent event) throws IOException {
         System.out.println("I Clicked Submit!!!");
         System.out.println(loginUN.getText().toLowerCase());
         System.out.println(loginPW.getText());
         loadMainMenu();
     } // end processLogin
 
-    private void loadMainMenu() throws IOException{
+    private void loadMainMenu() throws IOException {
         Stage stage;
         Parent root;
         stage = (Stage) loginSubmit.getScene().getWindow();
