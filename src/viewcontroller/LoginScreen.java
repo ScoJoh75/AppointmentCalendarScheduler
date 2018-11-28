@@ -8,7 +8,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
 import java.net.URL;
-import java.util.Locale;
+import java.util.*;
 import java.util.ResourceBundle;
 
 public class LoginScreen implements Initializable {
@@ -26,6 +26,9 @@ public class LoginScreen implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
+        // Locale.setDefault(new Locale("es"));
+
         System.out.println(Locale.getDefault());
         rb = ResourceBundle.getBundle("languagefiles.Login", Locale.getDefault());
         loginLabel.setText(String.valueOf(rb.getObject("loginLabel")));
