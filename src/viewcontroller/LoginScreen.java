@@ -1,6 +1,5 @@
 package viewcontroller;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -34,7 +33,7 @@ public class LoginScreen implements Initializable {
     private Button loginSubmit;
 
     private static Consultant consultant = new Consultant();
-    private static Connection conn = null;
+    private static Connection connection = null;
     private Statement statement = null;
     private ResultSet results = null;
 
@@ -48,27 +47,41 @@ public class LoginScreen implements Initializable {
 
 
     @FXML
-    public void processLogin(ActionEvent event) throws IOException, SQLException {
+    public void processLogin() throws SQLException {
         System.out.println("I Clicked Submit!!!");
 
-        conn = DBConnection.dbConnect();
-        statement = conn.createStatement();
-        results = statement.executeQuery("SELECT userId FROM user WHERE userName = '" + loginUN.getText().toLowerCase() + "'");
-        ResultSetMetaData rsmd = results.getMetaData();
-        int columnsNumber = rsmd.getColumnCount();
-        while(results.next()){
-            for (int i = 1; i <= columnsNumber; i++) {
-                if (i > 1) System.out.print(", ");
-                String columnValue = results.getString(i);
-                consultant.setId(Integer.parseInt(columnValue));
-                consultant.setUserName(loginUN.getText());
-            }
-            System.out.println("");
-        }
+        connection = DBConnection.dbConnect();
+        try {
+            statement = connection.createStatement();
+            results = statement.executeQuery("SELECT userId FROM user WHERE userName = '" + loginUN.getText().toLowerCase() + "'");
+            ResultSetMetaData rsmd = results.getMetaData();
+            int columnsNumber = rsmd.getColumnCount();
+            while (results.next()) {
+                for (int i = 1; i <= columnsNumber; i++) {
+                    if (i > 1) System.out.print(", ");
+                    String columnValue = results.getString(i);
+                    consultant.setId(Integer.parseInt(columnValue));
+                    consultant.setUserName(loginUN.getText());
+                } // end for
+                System.out.println();
+            } // end while
+        } catch(SQLException e) {
+            System.out.println("A SQL Error has occurred!");
+            e.printStackTrace();
+        } finally {
+            if(connection != null) connection.close();
+        } // end try
 
         System.out.println(consultant.getId());
         System.out.println(consultant.getUserName());
-        loadMainMenu();
+
+        try {
+            loadMainMenu();
+        } catch(IOException e) {
+            System.out.println("An error occurred when opening Main Menu!");
+            e.printStackTrace();
+        } // end try
+
 
     } // end processLogin
 
