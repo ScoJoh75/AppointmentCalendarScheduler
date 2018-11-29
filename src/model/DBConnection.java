@@ -1,18 +1,28 @@
 package model;
 
+import java.sql.*;
+
+import static model.Secrets.*;
+
 public class DBConnection {
 
-    public static final String driver = "com.mysql.jdbc.Driver";
-    public static final String database = "U03yFv";
-    public static final String url = "jdbc:mysql://52.206.157.109/" + database;
-    public static final String user = "U03yFv";
-    public static final String password = "53688120629";
-
-
+    private static Consultant consultant;
 
     public void dbConnect (String UN, String PW) {
+        try {
+            Class.forName(driver);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } // end try
 
-    }
-
-
-}
+        try (Connection conn = DriverManager.getConnection(url, user, password);
+        Statement statement = conn.createStatement()) {
+            ResultSet data = statement.executeQuery("SELECT * FROM user");
+            while (data.next()) {
+                System.out.println(data);
+            } // end while
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } // end try
+    } // end dbConnect
+} // end DBConnection

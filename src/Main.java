@@ -21,9 +21,9 @@ public class Main extends Application {
         primaryStage.setTitle(String.valueOf(rb.getObject("loginTitle")));
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
-    }
+    } // end start
 
     public static void main(String[] args) {
         launch(args);
     }
-}
+} // end Main
