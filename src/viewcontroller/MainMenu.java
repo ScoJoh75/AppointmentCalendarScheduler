@@ -1,5 +1,6 @@
 package viewcontroller;
 
+import com.mysql.cj.log.Log;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -31,6 +32,11 @@ public class MainMenu implements Initializable {
     @FXML
     private Label appointmentAlert;
 
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        welcomeLabel.setText("Welcome " + LoginScreen.consultant.getUserName());
+    } // end initialize
+
     public void choiceHandler(ActionEvent actionEvent) throws IOException {
         Stage stage;
         Parent root;
@@ -55,10 +61,4 @@ public class MainMenu implements Initializable {
         stage.setScene(scene);
         stage.show();
     } // end customerHandler
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        System.out.println(LoginScreen.consultant.getId());
-        System.out.println(LoginScreen.consultant.getUserName());
-    }
 } // end MainMenu

@@ -36,7 +36,7 @@ public class LoginScreen implements Initializable {
     static Connection connection = null;
     Statement statement = null;
     ResultSet results = null;
-    private String password;
+    private String password = "";
     private boolean validated = false;
 
     @Override
@@ -55,25 +55,23 @@ public class LoginScreen implements Initializable {
         connection = DBConnection.dbConnect();
         try {
             statement = connection.createStatement();
-            String sql = "SELECT userId, password FROM user WHERE userName = '" + loginUN.getText().toLowerCase() + "'";
-            System.out.println(sql);
+            String sql = "SELECT userId, userName, password FROM user WHERE userName LIKE '" + loginUN.getText().toLowerCase() + "'";
             results = statement.executeQuery(sql);
 
             while (results.next()) {
-                consultant.setId(Integer.parseInt(results.getString(0)));
-                consultant.setUserName(loginUN.getText());
-                password = results.getString(1);
+                consultant.setId(results.getInt("userId"));
+                consultant.setUserName(results.getString("userName"));
+                password = results.getString("password");
             } // end while
 
-            if(password.equals(loginPW.getText()) && Integer.parseInt(results.getString(0)) > 0) validated = true;
+            if(password.equals(loginPW.getText())) {
+                validated = true;
+                password = "";
+            }
 
         } catch(SQLException e) {
             System.out.println("A SQL Error has occurred!");
-        } finally {
-            if(connection != null) connection.close();
         } // end try
-
-
 
         if(validated) {
             try {
