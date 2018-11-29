@@ -32,10 +32,12 @@ public class LoginScreen implements Initializable {
     @FXML
     private Button loginSubmit;
 
-    private static Consultant consultant = new Consultant();
-    private static Connection connection = null;
-    private Statement statement = null;
-    private ResultSet results = null;
+    static Consultant consultant = new Consultant();
+    static Connection connection = null;
+    Statement statement = null;
+    ResultSet results = null;
+    private String password;
+    private boolean validated = false;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -53,35 +55,35 @@ public class LoginScreen implements Initializable {
         connection = DBConnection.dbConnect();
         try {
             statement = connection.createStatement();
-            results = statement.executeQuery("SELECT userId FROM user WHERE userName = '" + loginUN.getText().toLowerCase() + "'");
-            ResultSetMetaData rsmd = results.getMetaData();
-            int columnsNumber = rsmd.getColumnCount();
+            String sql = "SELECT userId, password FROM user WHERE userName = '" + loginUN.getText().toLowerCase() + "'";
+            System.out.println(sql);
+            results = statement.executeQuery(sql);
+
             while (results.next()) {
-                for (int i = 1; i <= columnsNumber; i++) {
-                    if (i > 1) System.out.print(", ");
-                    String columnValue = results.getString(i);
-                    consultant.setId(Integer.parseInt(columnValue));
-                    consultant.setUserName(loginUN.getText());
-                } // end for
-                System.out.println();
+                consultant.setId(Integer.parseInt(results.getString(0)));
+                consultant.setUserName(loginUN.getText());
+                password = results.getString(1);
             } // end while
+
+            if(password.equals(loginPW.getText()) && Integer.parseInt(results.getString(0)) > 0) validated = true;
+
         } catch(SQLException e) {
             System.out.println("A SQL Error has occurred!");
-            e.printStackTrace();
         } finally {
             if(connection != null) connection.close();
         } // end try
 
-        System.out.println(consultant.getId());
-        System.out.println(consultant.getUserName());
 
-        try {
-            loadMainMenu();
-        } catch(IOException e) {
-            System.out.println("An error occurred when opening Main Menu!");
-            e.printStackTrace();
-        } // end try
 
+        if(validated) {
+            try {
+                loadMainMenu();
+            } catch (IOException e) {
+                System.out.println("An error occurred when opening Main Menu!");
+            } // end try
+        } else {
+            System.out.println("Ya UName or PWord be incorrect!!!");
+        }
 
     } // end processLogin
 
