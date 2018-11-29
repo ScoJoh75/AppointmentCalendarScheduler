@@ -5,6 +5,8 @@ public class Consultant {
     private String userName;
 
     public Consultant () {
+        this.Id = 0;
+        this.userName = "";
 
     } // constructor
 

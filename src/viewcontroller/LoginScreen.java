@@ -11,14 +11,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import model.Consultant;
 import model.DBConnection;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.*;
 import java.util.ResourceBundle;
 
@@ -35,7 +33,8 @@ public class LoginScreen implements Initializable {
     @FXML
     private Button loginSubmit;
 
-    private Connection conn = null;
+    private static Consultant consultant = new Consultant();
+    private static Connection conn = null;
     private Statement statement = null;
     private ResultSet results = null;
 
@@ -54,14 +53,23 @@ public class LoginScreen implements Initializable {
 
         conn = DBConnection.dbConnect();
         statement = conn.createStatement();
-        results = statement.executeQuery("SELECT * FROM user");
+        results = statement.executeQuery("SELECT userId FROM user WHERE userName = '" + loginUN.getText().toLowerCase() + "'");
+        ResultSetMetaData rsmd = results.getMetaData();
+        int columnsNumber = rsmd.getColumnCount();
         while(results.next()){
-            System.out.println(results);
+            for (int i = 1; i <= columnsNumber; i++) {
+                if (i > 1) System.out.print(", ");
+                String columnValue = results.getString(i);
+                consultant.setId(Integer.parseInt(columnValue));
+                consultant.setUserName(loginUN.getText());
+            }
+            System.out.println("");
         }
 
-        System.out.println(loginUN.getText().toLowerCase());
-        System.out.println(loginPW.getText());
+        System.out.println(consultant.getId());
+        System.out.println(consultant.getUserName());
         loadMainMenu();
+
     } // end processLogin
 
     private void loadMainMenu() throws IOException {
