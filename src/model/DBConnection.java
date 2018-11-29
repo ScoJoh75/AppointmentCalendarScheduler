@@ -6,23 +6,21 @@ import static model.Secrets.*;
 
 public class DBConnection {
 
-    private static Consultant consultant;
+    private static Connection conn;
 
-    public void dbConnect (String UN, String PW) {
+    public static Connection dbConnect() {
         try {
             Class.forName(driver);
+            try {
+                conn = DriverManager.getConnection(url, user, password);
+            } catch (SQLException e) {
+                System.out.println("Failed to create the database connection.");
+                e.printStackTrace();
+            }
         } catch (ClassNotFoundException e) {
+            System.out.println("Driver not Found.");
             e.printStackTrace();
-        } // end try
-
-        try (Connection conn = DriverManager.getConnection(url, user, password);
-        Statement statement = conn.createStatement()) {
-            ResultSet data = statement.executeQuery("SELECT * FROM user");
-            while (data.next()) {
-                System.out.println(data);
-            } // end while
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } // end try
+        }
+        return conn;
     } // end dbConnect
 } // end DBConnection

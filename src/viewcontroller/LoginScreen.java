@@ -11,9 +11,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import model.DBConnection;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.*;
 import java.util.ResourceBundle;
 
@@ -30,6 +35,10 @@ public class LoginScreen implements Initializable {
     @FXML
     private Button loginSubmit;
 
+    private Connection conn = null;
+    private Statement statement = null;
+    private ResultSet results = null;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         rb = ResourceBundle.getBundle("languagefiles.Login", Locale.getDefault());
@@ -40,8 +49,16 @@ public class LoginScreen implements Initializable {
 
 
     @FXML
-    public void processLogin(ActionEvent event) throws IOException {
+    public void processLogin(ActionEvent event) throws IOException, SQLException {
         System.out.println("I Clicked Submit!!!");
+
+        conn = DBConnection.dbConnect();
+        statement = conn.createStatement();
+        results = statement.executeQuery("SELECT * FROM user");
+        while(results.next()){
+            System.out.println(results);
+        }
+
         System.out.println(loginUN.getText().toLowerCase());
         System.out.println(loginPW.getText());
         loadMainMenu();
