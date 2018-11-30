@@ -49,7 +49,7 @@ public class LoginScreen implements Initializable {
 
 
     @FXML
-    public void processLogin() throws SQLException {
+    public void processLogin() {
         System.out.println("I Clicked Submit!!!");
 
         connection = DBConnection.dbConnect();
@@ -64,7 +64,7 @@ public class LoginScreen implements Initializable {
                 password = results.getString("password");
             } // end while
 
-            if(password.equals(loginPW.getText()) && password != "") {
+            if(password.equals(loginPW.getText()) && !password.equals("")) {
                 validated = true;
                 password = "";
             } // end if
@@ -81,7 +81,7 @@ public class LoginScreen implements Initializable {
             } // end try
         } else {
             System.out.println("Ya UName or PWord be incorrect!!!");
-        }
+        } // end if
 
     } // end processLogin
 

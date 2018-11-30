@@ -7,8 +7,7 @@ public class Consultant {
     public Consultant () {
         this.Id = 0;
         this.userName = "";
-
-    } // constructor
+    } // end constructor
 
     // Getters & Setters
     public int getId() {

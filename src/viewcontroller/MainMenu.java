@@ -1,6 +1,5 @@
 package viewcontroller;
 
-import com.mysql.cj.log.Log;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -25,9 +24,6 @@ public class MainMenu implements Initializable {
 
     @FXML
     private Button appointmentButton;
-    
-    @FXML
-    private Button reportButton;
     
     @FXML
     private Label appointmentAlert;
