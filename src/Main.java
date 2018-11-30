@@ -14,7 +14,6 @@ public class Main extends Application {
 
 //        Locale.setDefault(new Locale("es")); // Uncomment to change Default Locale for language testing.
 
-        System.out.println(Locale.getDefault());
         ResourceBundle rb = ResourceBundle.getBundle("languagefiles.Login", Locale.getDefault());
 
         Parent root = FXMLLoader.load(getClass().getResource("viewcontroller/LoginScreen.fxml"));

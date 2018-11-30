@@ -33,9 +33,9 @@ public class LoginScreen implements Initializable {
     private Button loginSubmit;
 
     static Consultant consultant = new Consultant();
-    static Connection connection = null;
-    Statement statement = null;
-    ResultSet results = null;
+    private Connection connection = null;
+    private Statement statement = null;
+    private ResultSet results = null;
     private String password = "";
     private boolean validated = false;
 
@@ -49,9 +49,7 @@ public class LoginScreen implements Initializable {
 
 
     @FXML
-    public void processLogin() {
-        System.out.println("I Clicked Submit!!!");
-
+    public void processLogin() throws SQLException {
         connection = DBConnection.dbConnect();
         try {
             statement = connection.createStatement();
@@ -71,6 +69,10 @@ public class LoginScreen implements Initializable {
 
         } catch(SQLException e) {
             System.out.println("A SQL Error has occurred!");
+        } finally {
+            if (connection != null) {
+                connection.close();
+            } // end if
         } // end try
 
         if(validated) {
@@ -78,6 +80,7 @@ public class LoginScreen implements Initializable {
                 loadMainMenu();
             } catch (IOException e) {
                 System.out.println("An error occurred when opening Main Menu!");
+                e.printStackTrace();
             } // end try
         } else {
             System.out.println("Ya UName or PWord be incorrect!!!");
