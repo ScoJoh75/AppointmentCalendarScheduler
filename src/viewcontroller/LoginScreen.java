@@ -55,7 +55,7 @@ public class LoginScreen implements Initializable {
         connection = DBConnection.dbConnect();
         try {
             statement = connection.createStatement();
-            String sql = "SELECT userId, userName, password FROM user WHERE userName LIKE '" + loginUN.getText().toLowerCase() + "'";
+            String sql = "SELECT userId, userName, password FROM user WHERE userName LIKE '" + loginUN.getText() + "'";
             results = statement.executeQuery(sql);
 
             while (results.next()) {
@@ -64,10 +64,10 @@ public class LoginScreen implements Initializable {
                 password = results.getString("password");
             } // end while
 
-            if(password.equals(loginPW.getText())) {
+            if(password.equals(loginPW.getText()) && password != "") {
                 validated = true;
                 password = "";
-            }
+            } // end if
 
         } catch(SQLException e) {
             System.out.println("A SQL Error has occurred!");
