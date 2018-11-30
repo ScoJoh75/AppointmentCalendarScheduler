@@ -33,9 +33,6 @@ public class LoginScreen implements Initializable {
     private Button loginSubmit;
 
     static Consultant consultant = new Consultant();
-    private Connection connection = null;
-    private Statement statement = null;
-    private ResultSet results = null;
     private String password = "";
     private boolean validated = false;
 
@@ -47,32 +44,25 @@ public class LoginScreen implements Initializable {
         loginSubmit.setText(String.valueOf(rb.getObject("loginSubmit")));
     } // end initialize
 
-
     @FXML
-    public void processLogin() throws SQLException {
-        connection = DBConnection.dbConnect();
-        try {
-            statement = connection.createStatement();
-            String sql = "SELECT userId, userName, password FROM user WHERE userName LIKE '" + loginUN.getText() + "'";
-            results = statement.executeQuery(sql);
+    public void processLogin() {
+        try (Connection connection = DBConnection.dbConnect()) {
+                Statement statement = connection.createStatement();
+                String sql = "SELECT userId, userName, password FROM user WHERE userName LIKE '" + loginUN.getText() + "'";
+                ResultSet results = statement.executeQuery(sql);
 
-            while (results.next()) {
-                consultant.setId(results.getInt("userId"));
-                consultant.setUserName(results.getString("userName"));
-                password = results.getString("password");
-            } // end while
+                while (results.next()) {
+                    consultant.setId(results.getInt("userId"));
+                    consultant.setUserName(results.getString("userName"));
+                    password = results.getString("password");
+                } // end while
 
-            if(password.equals(loginPW.getText()) && !password.equals("")) {
-                validated = true;
-                password = "";
-            } // end if
-
-        } catch(SQLException e) {
+                if (password.equals(loginPW.getText()) && !password.equals("")) {
+                    validated = true;
+                    password = "";
+                } // end if
+        } catch (SQLException e) {
             System.out.println("A SQL Error has occurred!");
-        } finally {
-            if (connection != null) {
-                connection.close();
-            } // end if
         } // end try
 
         if(validated) {
@@ -85,7 +75,6 @@ public class LoginScreen implements Initializable {
         } else {
             System.out.println("Ya UName or PWord be incorrect!!!");
         } // end if
-
     } // end processLogin
 
     private void loadMainMenu() throws IOException {

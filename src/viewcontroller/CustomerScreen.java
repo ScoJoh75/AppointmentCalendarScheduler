@@ -74,7 +74,7 @@ public class CustomerScreen implements Initializable {
     }
 
     @FXML
-    void mainMenuHandler(ActionEvent event) throws IOException {
+    void mainMenuHandler() throws IOException {
         Stage stage;
         Parent root;
         stage = (Stage) mainMenu.getScene().getWindow();

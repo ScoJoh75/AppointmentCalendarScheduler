@@ -35,9 +35,6 @@ public class MainMenu implements Initializable {
     @FXML
     private Label appointmentAlert;
 
-    private Connection connection = null;
-    private Statement statement = null;
-    private ResultSet results = null;
     static AllCustomers allCustomers = new AllCustomers();
 
     @Override
@@ -73,9 +70,8 @@ public class MainMenu implements Initializable {
     } // end customerHandler
 
     private void buildCustomerList(){
-        connection = DBConnection.dbConnect();
-        try {
-            statement = connection.createStatement();
+        try (Connection connection = DBConnection.dbConnect()){
+            Statement statement = connection.createStatement();
             String sql = "SELECT customer.customerId, \n" +
                     "customer.customerName, \n" +
                     "customer.active, \n" +
@@ -91,8 +87,9 @@ public class MainMenu implements Initializable {
                     "FROM customer, address, city, country\n" +
                     "WHERE customer.addressId = address.addressId AND\n" +
                     "address.cityId = city.cityId AND\n" +
-                    "city.countryId = country.countryId;";
-            results = statement.executeQuery(sql);
+                    "city.countryId = country.countryId AND\n" +
+                    "customer.active = 1;";
+            ResultSet results = statement.executeQuery(sql);
             while (results.next()) {
                 Customer customer = new Customer();
                 customer.setId(results.getInt("customerId"));
@@ -112,14 +109,6 @@ public class MainMenu implements Initializable {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                } // end try/catch
-            } //end if
         } // end try/catch
     }
 } // end MainMenu
