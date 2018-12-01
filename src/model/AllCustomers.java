@@ -26,4 +26,8 @@ public class AllCustomers {
     public ObservableList<Customer> getAllCustomers() {
         return allCustomers;
     } // end getAllCustomers
+
+    public void updateCustomer(Customer customer, int index) {
+        allCustomers.set(index, customer);
+    } // end updateCustomer
 } // end AllCustomers

@@ -10,8 +10,13 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import model.Customer;
+import model.DBConnection;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import static viewcontroller.MainMenu.allCustomers;
 
@@ -52,13 +57,46 @@ public class AddModCustomerScreen {
 
     @FXML
     void addModCustomerHandler(ActionEvent actionEvent) throws IOException {
-        if (actionEvent.getSource() == addModButton) {
+        if (actionEvent.getSource() == cancelButton) {
+            System.out.println("We're canceling!");
             // validate customer data, add to database, get id, create customer object and add to arraylist.
             sceneChange();
+        } else if (actionEvent.getSource() == addModButton && modifying){
+            System.out.println("We're updating and existing customer! At index: " + index);
+            System.out.println("The name is: " + customer.getCustomerName());
+            updateCustomer();
         } else {
-            sceneChange();
+            System.out.println("We're adding a whole new customer!");
         } // end if
     } // end addModCustomerHandler
+
+    private void updateCustomer () throws IOException {
+        // Statements update the current customer object
+        customer.setCustomerName(customerNameField.getText());
+        customer.setAddress1(address1Field.getText());
+        customer.setAddress2(address2Field.getText());
+        customer.setCityName(cityField.getText());
+        customer.setCountryName(countryField.getText());
+        customer.setPostalCode(postalCodeField.getText());
+        customer.setPhone(phoneField.getText());
+
+        // Updated Customer object is inserted into the AllCustomer list replacing the old.
+        allCustomers.updateCustomer(customer, index);
+
+//        try (Connection connection = DBConnection.dbConnect()) {
+//            Statement statement = connection.createStatement();
+//            String sql = " ";
+//            ResultSet results = statement.executeQuery(sql);
+//            while (results.next()) {
+//
+//            } // end while
+//        } catch(SQLException e) {
+//            System.out.println("Error with your SQL");
+//        }
+
+        // After update, return to the Customer Screen
+        sceneChange();
+    } // end updateCustomer
 
     /**
      * setCustomer is called when a user decides to update an existing customer.

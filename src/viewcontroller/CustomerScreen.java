@@ -60,10 +60,6 @@ public class CustomerScreen implements Initializable {
 
     @FXML
     void customerAddModHandler(ActionEvent actionEvent) throws IOException {
-        if(actionEvent.getSource() == customerUpdate) {
-            System.out.println("Update Was pressed!");
-        } // end if
-
         Stage stage;
         Parent root;
         stage = (Stage) customerAdd.getScene().getWindow();
