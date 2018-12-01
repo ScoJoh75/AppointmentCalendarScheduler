@@ -56,30 +56,33 @@ public class CustomerScreen implements Initializable {
         countryColumn.setCellValueFactory(new PropertyValueFactory<>("countryName"));
         customerTableView.setItems(allCustomers.getAllCustomers());
         customerTableView.getSelectionModel().select(0);
-    }
+    } // end initialize
 
     @FXML
     void customerAddModHandler(ActionEvent actionEvent) throws IOException {
+        if(actionEvent.getSource() == customerUpdate) {
+            System.out.println("Update Was pressed!");
+        } // end if
+
         Stage stage;
         Parent root;
         stage = (Stage) customerAdd.getScene().getWindow();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("AddModCustomerScreen.fxml"));
         root = loader.load();
         Scene scene = new Scene(root);
-        stage.setTitle("Add New Customer");
         stage.setScene(scene);
         stage.show();
-    }
-
-    @FXML
-    void customerUpdateHandler(ActionEvent actionEvent) {
-
-    }
+        if(actionEvent.getSource() == customerUpdate) {
+            AddModCustomerScreen controller = loader.getController();
+            Customer customer = customerTableView.getSelectionModel().getSelectedItem();
+            controller.setCustomer(customer);
+        } // end if
+    } // end customerAddModHandler
 
     @FXML
     void customerDeleteHandler(ActionEvent actionEvent) {
 
-    }
+    } // end customerDeleteHandler
 
     @FXML
     void mainMenuHandler() throws IOException {
@@ -92,5 +95,5 @@ public class CustomerScreen implements Initializable {
         stage.setTitle("Main Menu");
         stage.setScene(scene);
         stage.show();
-    } // mainMenuHandler
+    } // end mainMenuHandler
 }
