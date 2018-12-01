@@ -40,8 +40,13 @@ public class MainMenu implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         welcomeLabel.setText("Welcome " + LoginScreen.consultant.getUserName());
-        // Gets all Customers and Populates the AllCustomers list.
-        buildCustomerList();
+        // Gets all Customers and Populates the AllCustomers list when the MainMenu loads for the first time
+        if(allCustomers.getAllCustomers().size() == 0) {
+            buildCustomerList();
+        } // end if
+
+        // Checks for appointments in the next 15 minutes and posts an alert notification
+        appointmentAlert.visibleProperty().setValue(false);
     } // end initialize
 
     public void choiceHandler(ActionEvent actionEvent) throws IOException {

@@ -59,7 +59,7 @@ public class CustomerScreen implements Initializable {
     }
 
     @FXML
-    void customerAddHandler(ActionEvent event) throws IOException {
+    void customerAddModHandler(ActionEvent actionEvent) throws IOException {
         Stage stage;
         Parent root;
         stage = (Stage) customerAdd.getScene().getWindow();
@@ -72,12 +72,12 @@ public class CustomerScreen implements Initializable {
     }
 
     @FXML
-    void customerUpdateHandler(ActionEvent event) {
+    void customerUpdateHandler(ActionEvent actionEvent) {
 
     }
 
     @FXML
-    void customerDeleteHandler(ActionEvent event) {
+    void customerDeleteHandler(ActionEvent actionEvent) {
 
     }
 
