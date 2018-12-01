@@ -59,8 +59,16 @@ public class CustomerScreen implements Initializable {
     }
 
     @FXML
-    void customerAddHandler(ActionEvent event) {
-
+    void customerAddHandler(ActionEvent event) throws IOException {
+        Stage stage;
+        Parent root;
+        stage = (Stage) customerAdd.getScene().getWindow();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("AddModCustomerScreen.fxml"));
+        root = loader.load();
+        Scene scene = new Scene(root);
+        stage.setTitle("Add New Customer");
+        stage.setScene(scene);
+        stage.show();
     }
 
     @FXML
