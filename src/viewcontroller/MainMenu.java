@@ -75,8 +75,8 @@ public class MainMenu implements Initializable {
     } // end customerHandler
 
     private void buildCustomerList(){
-        try (Connection connection = DBConnection.dbConnect()){
-            Statement statement = connection.createStatement();
+        try (Connection connection = DBConnection.dbConnect();
+            Statement statement = connection.createStatement()){
             String sql = "SELECT customer.customerId, \n" +
                     "customer.customerName, \n" +
                     "customer.active, \n" +

@@ -46,8 +46,8 @@ public class LoginScreen implements Initializable {
 
     @FXML
     public void processLogin() {
-        try (Connection connection = DBConnection.dbConnect()) {
-                Statement statement = connection.createStatement();
+        try (Connection connection = DBConnection.dbConnect();
+                Statement statement = connection.createStatement()) {
                 String sql = "SELECT userId, userName, password FROM user WHERE userName LIKE '" + loginUN.getText() + "'";
                 ResultSet results = statement.executeQuery(sql);
 

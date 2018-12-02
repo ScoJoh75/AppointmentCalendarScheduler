@@ -85,11 +85,11 @@ public class AddModCustomerScreen {
 
 //        try (Connection connection = DBConnection.dbConnect()) {
 //            Statement statement = connection.createStatement();
-//            String sql = " ";
-//            ResultSet results = statement.executeQuery(sql);
-//            while (results.next()) {
 //
-//            } // end while
+//            // First update country table
+//            String sql = "UPDATE ";
+//            statement.executeUpdate(sql);
+//
 //        } catch(SQLException e) {
 //            System.out.println("Error with your SQL");
 //        }
