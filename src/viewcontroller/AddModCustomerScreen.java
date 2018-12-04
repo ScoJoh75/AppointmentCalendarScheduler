@@ -19,13 +19,11 @@ import model.*;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
-import java.util.List;
 import java.util.ResourceBundle;
 
+import static viewcontroller.LoginScreen.consultant;
 import static viewcontroller.MainMenu.allCustomers;
 
 public class AddModCustomerScreen implements Initializable {
@@ -61,8 +59,6 @@ public class AddModCustomerScreen implements Initializable {
 
     private Customer customer;
     private boolean modifying;
-    private boolean newCity;
-    private boolean newCountry;
     private int index;
 
     static AllLocations allLocations = new AllLocations();
@@ -101,8 +97,7 @@ public class AddModCustomerScreen implements Initializable {
     } // end loadComboBoxes
 
     @FXML
-    void countryChangeHandler(ActionEvent actionEvent) {
-        System.out.println("Country Change Detected!");
+    void countryChangeHandler() {
         selectedCities = allLocations.getSelectedCities(countryField.getValue().getId());
         cityField.setItems(selectedCities);
     } // end countryChangeHandler
@@ -113,8 +108,7 @@ public class AddModCustomerScreen implements Initializable {
             System.out.println("We're canceling!");
             sceneChange();
         } else if (actionEvent.getSource() == addModButton && modifying){
-            System.out.println("We're updating and existing customer! At index: " + index);
-            // validate customer data, add to database, get id, create customer object and add to arraylist.
+            // validate customer data, add to database, update customer object and update arraylist.
             updateCustomer();
         } else {
             // validate customer data, add to database, get id, create customer object and add to arraylist.
@@ -152,16 +146,22 @@ public class AddModCustomerScreen implements Initializable {
         // Updated Customer object is inserted into the AllCustomer list replacing the old.
         allCustomers.updateCustomer(customer, index);
 
-//        try (Connection connection = DBConnection.dbConnect()) {
-//            Statement statement = connection.createStatement();
-//
-//            // First update country table
-//            String sql = "UPDATE ";
-//            statement.executeUpdate(sql);
-//
-//        } catch(SQLException e) {
-//            System.out.println("Error with your SQL");
-//        }
+        // DB Updates needed: Customer, Address
+        try (Connection connection = DBConnection.dbConnect();
+             Statement statement = connection.createStatement()){
+            // Update customer table
+            String sql = "UPDATE customer SET customerName = '" + customerName + "', lastUpdateBy = '" + consultant.getUserName() + "' WHERE customerId = " + Id;
+            int customerUpdateSuccessful = statement.executeUpdate(sql);
+            // Update address table
+            sql = "UPDATE address SET address = '" + address1 + "', address2 = '" + address2 + "', cityId = '" + cityId + "', postalCode = '" + postalCode + "', phone = '" + phone + "', lastUpdateBy = '" + consultant.getUserName() + "' WHERE addressId = " + addressId;
+            int addressUpdateSuccessful = statement.executeUpdate(sql);
+            // check if updates were successful
+            if(customerUpdateSuccessful == 1 && addressUpdateSuccessful == 1) {
+                System.out.println("Congrats, You've updated a customer successfully!!!!!");
+            } // end if
+        } catch(SQLException e) {
+            System.out.println("Error with your SQL");
+        } // end try/catch
 
         // After update, return to the Customer Screen
         sceneChange();

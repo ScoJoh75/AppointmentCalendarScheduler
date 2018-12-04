@@ -76,7 +76,7 @@ public class CustomerScreen implements Initializable {
     } // end customerAddModHandler
 
     @FXML
-    void customerDeleteHandler(ActionEvent actionEvent) {
+    void customerDeleteHandler() {
 
     } // end customerDeleteHandler
 
