@@ -1,5 +1,7 @@
 package viewcontroller;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -62,9 +64,9 @@ public class AddModCustomerScreen implements Initializable {
     private boolean newCity;
     private boolean newCountry;
     private int index;
-    private HashMap<String, List<String>> location = new HashMap<>();
 
     static AllLocations allLocations = new AllLocations();
+    private ObservableList<City> selectedCities = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -95,10 +97,15 @@ public class AddModCustomerScreen implements Initializable {
             }
         });
         countryField.setItems(allLocations.getAllCountries());
-        countryField.setValue(allLocations.getAllCountries().get(0));
-        cityField.setItems(allLocations.getAllCities());
-        cityField.setValue((allLocations.getAllCities().get(0)));
+        cityField.setItems(selectedCities);
     } // end loadComboBoxes
+
+    @FXML
+    void countryChangeHandler(ActionEvent actionEvent) {
+        System.out.println("Country Change Detected!");
+        selectedCities = allLocations.getSelectedCities(countryField.getValue().getId());
+        cityField.setItems(selectedCities);
+    } // end countryChangeHandler
 
     @FXML
     void addModCustomerHandler(ActionEvent actionEvent) throws IOException {
@@ -170,8 +177,9 @@ public class AddModCustomerScreen implements Initializable {
     void setCustomer(Customer customer) {
         this.customer = customer;
         modifying = true;
-        // Lines below set the on screen fields with the data in the passed customer object..
         addModLabel.setText("Update Customer");
+        addModButton.setText("Update Customer");
+        // Lines below set the on screen fields with the data in the passed customer object..
         customerNameField.setText(customer.getCustomerName());
         address1Field.setText(customer.getAddress1());
         address2Field.setText(customer.getAddress2());
@@ -186,7 +194,6 @@ public class AddModCustomerScreen implements Initializable {
     /**
      * sceneChange is just a simple method that brings you back to the CustomerScreen after Adding/Modding or just
      * plain cancelling out of the AddMod screen.
-     * @throws IOException
      */
     private void sceneChange() throws IOException {
         Stage stage;

@@ -16,6 +16,16 @@ public class AllLocations {
         return allCities;
     } // end getAllCities
 
+    public ObservableList<City> getSelectedCities (int countryId) {
+        ObservableList<City> selectedCities = FXCollections.observableArrayList();
+        for(City city : allCities) {
+            if(city.getCountryId() == countryId) {
+                selectedCities.add(city);
+            } // end if
+        } // end for
+        return selectedCities;
+    } // end getSelectedCity
+
     public void addCountry(Country country) {
         this.allCountries.add(country);
     } // end addCountry
