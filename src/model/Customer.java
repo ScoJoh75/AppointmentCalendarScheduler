@@ -14,9 +14,32 @@ public class Customer {
     private int countryId;
     private String countryName;
 
-    public Customer() {
+    public Customer() {} // end default Constructor
 
-    } // end Constructor
+    public Customer(String customerName, String address1, String address2, String postalCode, String phone, String cityName, String countryName) {
+        this.customerName = customerName;
+        this.address1 = address1;
+        this.address2 = address2;
+        this.postalCode = postalCode;
+        this.phone = phone;
+        this.cityName = cityName;
+        this.countryName = countryName;
+    } // end short constructor
+
+    public Customer(int Id, String customerName, int active, int addressId, String address1, String address2, String postalCode, String phone, int cityId, String cityName, int countryId, String countryName) {
+        this.Id = Id;
+        this.customerName = customerName;
+        this.active = active;
+        this.addressId = addressId;
+        this.address1 = address1;
+        this.address2 = address2;
+        this.postalCode = postalCode;
+        this.phone = phone;
+        this.cityId = cityId;
+        this.cityName = cityName;
+        this.countryId = countryId;
+        this.countryName = countryName;
+    } // end full constructor
 
     // Getters & Setters
     public int getId() {

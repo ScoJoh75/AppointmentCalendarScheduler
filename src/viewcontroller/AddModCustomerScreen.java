@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -34,7 +35,7 @@ public class AddModCustomerScreen {
     private Label addModLabel;
 
     @FXML
-    private TextField cityField;
+    private ComboBox<String> cityField;
 
     @FXML
     private TextField customerNameField;
@@ -49,7 +50,7 @@ public class AddModCustomerScreen {
     private TextField address1Field;
 
     @FXML
-    private TextField countryField;
+    private ComboBox<String> countryField;
 
     private Customer customer;
     private boolean modifying;
@@ -75,8 +76,8 @@ public class AddModCustomerScreen {
         customer.setCustomerName(customerNameField.getText());
         customer.setAddress1(address1Field.getText());
         customer.setAddress2(address2Field.getText());
-        customer.setCityName(cityField.getText());
-        customer.setCountryName(countryField.getText());
+        customer.setCityName(cityField.getValue());
+        customer.setCountryName(countryField.getValue());
         customer.setPostalCode(postalCodeField.getText());
         customer.setPhone(phoneField.getText());
 
@@ -113,8 +114,8 @@ public class AddModCustomerScreen {
         customerNameField.setText(customer.getCustomerName());
         address1Field.setText(customer.getAddress1());
         address2Field.setText(customer.getAddress2());
-        cityField.setText(customer.getCityName());
-        countryField.setText(customer.getCountryName());
+        cityField.setValue(customer.getCityName());
+        countryField.setValue(customer.getCountryName());
         postalCodeField.setText(customer.getPostalCode());
         phoneField.setText(customer.getPhone());
         // determines the location in the AllCustomers array of the passed customer

@@ -93,7 +93,8 @@ public class MainMenu implements Initializable {
                     "WHERE customer.addressId = address.addressId AND\n" +
                     "address.cityId = city.cityId AND\n" +
                     "city.countryId = country.countryId AND\n" +
-                    "customer.active = 1;";
+                    "customer.active = 1\n" +
+                    "ORDER BY customer.customerId ASC;";
             ResultSet results = statement.executeQuery(sql);
             while (results.next()) {
                 Customer customer = new Customer();
