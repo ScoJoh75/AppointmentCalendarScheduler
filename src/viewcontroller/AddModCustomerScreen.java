@@ -3,6 +3,7 @@ package viewcontroller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -10,18 +11,22 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import model.Customer;
-import model.DBConnection;
+import javafx.util.StringConverter;
+import model.*;
 
 import java.io.IOException;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ResourceBundle;
 
 import static viewcontroller.MainMenu.allCustomers;
 
-public class AddModCustomerScreen {
+public class AddModCustomerScreen implements Initializable {
     @FXML
     private Button cancelButton;
 
@@ -35,7 +40,7 @@ public class AddModCustomerScreen {
     private Label addModLabel;
 
     @FXML
-    private ComboBox<String> cityField;
+    private ComboBox<City> cityField;
 
     @FXML
     private TextField customerNameField;
@@ -50,36 +55,92 @@ public class AddModCustomerScreen {
     private TextField address1Field;
 
     @FXML
-    private ComboBox<String> countryField;
+    private ComboBox<Country> countryField;
 
     private Customer customer;
     private boolean modifying;
+    private boolean newCity;
+    private boolean newCountry;
     private int index;
+    private HashMap<String, List<String>> location = new HashMap<>();
+
+    static AllLocations allLocations = new AllLocations();
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        loadComboBoxes();
+    }
+
+    private void loadComboBoxes() {
+        countryField.setConverter(new StringConverter<>() {
+            @Override
+            public String toString(Country country) {
+                return country.getName();
+            }
+
+            @Override
+            public Country fromString(String string) {
+                return null;
+            }
+        });
+        cityField.setConverter(new StringConverter<>() {
+            @Override
+            public String toString(City city) {
+                return city.getName();
+            }
+
+            @Override
+            public City fromString(String string) {
+                return null;
+            }
+        });
+        countryField.setItems(allLocations.getAllCountries());
+        countryField.setValue(allLocations.getAllCountries().get(0));
+        cityField.setItems(allLocations.getAllCities());
+        cityField.setValue((allLocations.getAllCities().get(0)));
+    } // end loadComboBoxes
 
     @FXML
     void addModCustomerHandler(ActionEvent actionEvent) throws IOException {
         if (actionEvent.getSource() == cancelButton) {
             System.out.println("We're canceling!");
-            // validate customer data, add to database, get id, create customer object and add to arraylist.
             sceneChange();
         } else if (actionEvent.getSource() == addModButton && modifying){
             System.out.println("We're updating and existing customer! At index: " + index);
-            System.out.println("The name is: " + customer.getCustomerName());
+            // validate customer data, add to database, get id, create customer object and add to arraylist.
             updateCustomer();
         } else {
+            // validate customer data, add to database, get id, create customer object and add to arraylist.
             System.out.println("We're adding a whole new customer!");
         } // end if
     } // end addModCustomerHandler
 
     private void updateCustomer () throws IOException {
-        // Statements update the current customer object
-        customer.setCustomerName(customerNameField.getText());
-        customer.setAddress1(address1Field.getText());
-        customer.setAddress2(address2Field.getText());
-        customer.setCityName(cityField.getValue());
-        customer.setCountryName(countryField.getValue());
-        customer.setPostalCode(postalCodeField.getText());
-        customer.setPhone(phoneField.getText());
+        // Get values from fields
+        String customerName = customerNameField.getText();
+        String address1 = address1Field.getText();
+        String address2 = address2Field.getText();
+        int cityId = cityField.getValue().getId();
+        String cityName = cityField.getValue().getName();
+        int countryId = countryField.getValue().getId();
+        String countryName = countryField.getValue().getName();
+        String postalCode = postalCodeField.getText();
+        String phone = phoneField.getText();
+
+        // Update customer object with values from fields
+        customer.setCustomerName(customerName);
+        customer.setAddress1(address1);
+        customer.setAddress2(address2);
+        customer.setCityName(cityName);
+        customer.setCityId(cityId);
+        customer.setCountryName(countryName);
+        customer.setCountryId(countryId);
+        customer.setPostalCode(postalCode);
+        customer.setPhone(phone);
+
+        // Get Id values from existing customer object
+        int Id = customer.getId();
+        int addressId = customer.getAddressId();
 
         // Updated Customer object is inserted into the AllCustomer list replacing the old.
         allCustomers.updateCustomer(customer, index);
@@ -114,14 +175,19 @@ public class AddModCustomerScreen {
         customerNameField.setText(customer.getCustomerName());
         address1Field.setText(customer.getAddress1());
         address2Field.setText(customer.getAddress2());
-        cityField.setValue(customer.getCityName());
-        countryField.setValue(customer.getCountryName());
+        cityField.setValue(allLocations.getAllCities().get(customer.getCityId()-1));
+        countryField.setValue(allLocations.getAllCountries().get(customer.getCountryId()-1));
         postalCodeField.setText(customer.getPostalCode());
         phoneField.setText(customer.getPhone());
         // determines the location in the AllCustomers array of the passed customer
         index = allCustomers.getAllCustomers().indexOf(customer);
     } // end setPart
 
+    /**
+     * sceneChange is just a simple method that brings you back to the CustomerScreen after Adding/Modding or just
+     * plain cancelling out of the AddMod screen.
+     * @throws IOException
+     */
     private void sceneChange() throws IOException {
         Stage stage;
         Parent root;
@@ -133,5 +199,4 @@ public class AddModCustomerScreen {
         stage.setScene(scene);
         stage.show();
     } // end sceneChange
-
 } // end AddModCustomerScreen

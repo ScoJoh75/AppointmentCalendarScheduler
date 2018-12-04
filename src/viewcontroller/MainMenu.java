@@ -9,9 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
-import model.AllCustomers;
-import model.Customer;
-import model.DBConnection;
+import model.*;
 
 import java.io.IOException;
 import java.net.URL;
@@ -20,6 +18,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ResourceBundle;
+
+import static viewcontroller.AddModCustomerScreen.allLocations;
 
 public class MainMenu implements Initializable {
 
@@ -42,9 +42,9 @@ public class MainMenu implements Initializable {
         welcomeLabel.setText("Welcome " + LoginScreen.consultant.getUserName());
         // Gets all Customers and Populates the AllCustomers list when the MainMenu loads for the first time
         if(allCustomers.getAllCustomers().size() == 0) {
+            buildLocationList();
             buildCustomerList();
         } // end if
-
         // Checks for appointments in the next 15 minutes and posts an alert notification
         appointmentAlert.visibleProperty().setValue(false);
     } // end initialize
@@ -72,7 +72,7 @@ public class MainMenu implements Initializable {
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
-    } // end customerHandler
+    } // end choiceHandler
 
     private void buildCustomerList(){
         try (Connection connection = DBConnection.dbConnect();
@@ -97,24 +97,50 @@ public class MainMenu implements Initializable {
                     "ORDER BY customer.customerId ASC;";
             ResultSet results = statement.executeQuery(sql);
             while (results.next()) {
-                Customer customer = new Customer();
-                customer.setId(results.getInt("customerId"));
-                customer.setCustomerName(results.getString("customerName"));
-                customer.setActive(results.getInt("active"));
-                customer.setAddressId(results.getInt("addressId"));
-                customer.setAddress1(results.getString("address"));
-                customer.setAddress2(results.getString("address2"));
-                customer.setPostalCode(results.getString("postalCode"));
-                customer.setPhone(results.getString("phone"));
-                customer.setCityId(results.getInt("cityId"));
-                customer.setCityName(results.getString("city"));
-                customer.setCountryId(results.getInt("countryId"));
-                customer.setCountryName(results.getString("country"));
-                allCustomers.addCustomer(customer);
+                int Id = results.getInt("customerId");
+                String customerName = results.getString("customerName");
+                int active = results.getInt("active");
+                int addressId = results.getInt("addressId");
+                String address = results.getString("address");
+                String address2 = results.getString("address2");
+                String postalCode = results.getString("postalCode");
+                String phone = results.getString("phone");
+                int cityId = results.getInt("cityId");
+                String cityName = results.getString("city");
+                int countryId = results.getInt("countryId");
+                String countryName = results.getString("country");
+                allCustomers.addCustomer(new Customer(Id, customerName, active, addressId, address, address2, postalCode, phone, cityId, cityName, countryId, countryName));
+            } // end while
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } // end try/catch
+    } // end buildCustomerList
+
+    /**
+     * buildLocationList runs when the AddMod screen is loaded the first time. It creates an observable list for
+     * Cities and one for Countries. The lists are made up of Country and City objects respectively which contain
+     * the database ID and name. The Country objects also contain the countryId to easily link them to their parent
+     * country.
+     */
+    private void buildLocationList() {
+        try (Connection connection = DBConnection.dbConnect();
+             Statement statement = connection.createStatement()) {
+            String sql = "SELECT countryId, country FROM country ORDER BY countryId ASC";
+            ResultSet results = statement.executeQuery(sql);
+            while(results.next()) {
+                Country country = new Country(results.getInt("countryId"), results.getString("country"));
+                allLocations.addCountry(country);
+            } // end while
+
+            sql = "SELECT cityId, city, countryId FROM city ORDER BY cityId ASC";
+            results = statement.executeQuery(sql);
+            while(results.next()) {
+                City city = new City(results.getInt("cityId"), results.getString("city"), results.getInt("countryId"));
+                allLocations.addCity(city);
             } // end while
 
         } catch (SQLException e) {
             e.printStackTrace();
         } // end try/catch
-    }
+    } // end buildLocationList
 } // end MainMenu
