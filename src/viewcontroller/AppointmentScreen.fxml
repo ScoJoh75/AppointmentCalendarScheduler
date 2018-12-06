@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane maxHeight="600.0" maxWidth="1000.0" minHeight="600.0" minWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="viewcontroller.AppointmentScreen">
+   <children>
+      <AnchorPane layoutX="400.0" layoutY="200.0" prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: Black; -fx-border-radius: 10;" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="50.0" />
+      <Button fx:id="mainMenuButton" alignment="CENTER" contentDisplay="CENTER" layoutX="896.0" layoutY="561.0" mnemonicParsing="false" onAction="#choiceHandler" text="Return to Main Menu" textAlignment="CENTER" AnchorPane.bottomAnchor="12.0" AnchorPane.rightAnchor="50.0" />
+   </children>
+</AnchorPane>
