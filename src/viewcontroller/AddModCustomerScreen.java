@@ -21,7 +21,6 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Date;
 import java.util.ResourceBundle;
 
 import static viewcontroller.LoginScreen.consultant;
@@ -70,6 +69,10 @@ public class AddModCustomerScreen implements Initializable {
         loadComboBoxes();
     }
 
+    /**
+     * loadComboBoxes sets up the needed String converter and toString overrides as well
+     * as binds the appropriate list to the combo boxes
+     */
     private void loadComboBoxes() {
         countryField.setConverter(new StringConverter<>() {
             @Override
@@ -97,12 +100,22 @@ public class AddModCustomerScreen implements Initializable {
         cityField.setItems(selectedCities);
     } // end loadComboBoxes
 
+    /**
+     * countryChangeHandler updates the cities that are populated in the city combobox
+     * based on the value in the country combobox. This ensures that the city/country
+     * pair will always be consistent and correct.
+     */
     @FXML
     void countryChangeHandler() {
         selectedCities = allLocations.getSelectedCities(countryField.getValue().getId());
         cityField.setItems(selectedCities);
     } // end countryChangeHandler
 
+
+    /**
+     * addModCustomerHandler simply determines which button was pressed by the user and calls the
+     * method appropriate to that selection.
+     */
     @FXML
     void addModCustomerHandler(ActionEvent actionEvent) throws IOException {
         if (actionEvent.getSource() == cancelButton) {
@@ -113,6 +126,12 @@ public class AddModCustomerScreen implements Initializable {
         } // end if
     } // end addModCustomerHandler
 
+    /**
+     * addUpdateCustomer is called when the user clicks the add/update button.
+     * It either updates an existing customer objects, or creates a new one by adding
+     * the field values to the object. Then it connects to the database and either updates
+     * or inserts new values for the customer depending on the situation.
+     */
     private void addUpdateCustomer() throws IOException {
         // Get values from fields
         String customerName = customerNameField.getText();
@@ -125,7 +144,7 @@ public class AddModCustomerScreen implements Initializable {
         String postalCode = postalCodeField.getText();
         String phone = phoneField.getText();
 
-        // if adding a new customer, instantiate a new Customer object.
+        // if adding a new customer, instantiate a new Customer object and set Id values
         if(!modifying) {
             this.customer = new Customer();
             int Id = allCustomers.getAllCustomers().size() + 1;
@@ -158,10 +177,20 @@ public class AddModCustomerScreen implements Initializable {
              Statement statement = connection.createStatement()){
             if(modifying) {
                 // Update customer table
-                String sql = "UPDATE customer SET customerName = '" + customerName + "', lastUpdateBy = '" + consultant.getUserName() + "' WHERE customerId = " + customer.getId();
+                String sql = "UPDATE customer " +
+                        "SET customerName = '" + customerName +
+                        "', lastUpdateBy = '" + consultant.getUserName() +
+                        "' WHERE customerId = " + customer.getId();
                 int customerUpdateSuccessful = statement.executeUpdate(sql);
                 // Update address table
-                sql = "UPDATE address SET address = '" + address1 + "', address2 = '" + address2 + "', cityId = '" + cityId + "', postalCode = '" + postalCode + "', phone = '" + phone + "', lastUpdateBy = '" + consultant.getUserName() + "' WHERE addressId = " + customer.getAddressId();
+                sql = "UPDATE address " +
+                        "SET address = '" + address1 +
+                        "', address2 = '" + address2 +
+                        "', cityId = '" + cityId +
+                        "', postalCode = '" + postalCode +
+                        "', phone = '" + phone +
+                        "', lastUpdateBy = '" + consultant.getUserName() +
+                        "' WHERE addressId = " + customer.getAddressId();
                 int addressUpdateSuccessful = statement.executeUpdate(sql);
                 // check if updates were successful
                 if (customerUpdateSuccessful == 1 && addressUpdateSuccessful == 1) {

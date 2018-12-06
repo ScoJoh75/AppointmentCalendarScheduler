@@ -12,9 +12,13 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import model.Customer;
+import model.DBConnection;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ResourceBundle;
 
 import static viewcontroller.MainMenu.allCustomers;
@@ -26,9 +30,6 @@ public class CustomerScreen implements Initializable {
 
     @FXML
     private Button customerUpdate;
-
-    @FXML
-    private Button customerDelete;
 
     @FXML
     private Button mainMenu;
@@ -77,7 +78,18 @@ public class CustomerScreen implements Initializable {
 
     @FXML
     void customerDeleteHandler() {
-
+        Customer customer = customerTableView.getSelectionModel().getSelectedItem();
+        allCustomers.removeCustomer(customer);
+        try (Connection connection = DBConnection.dbConnect();
+             Statement statement = connection.createStatement()){
+            String sql = "UPDATE customer SET active = 0 WHERE customerId = " + customer.getId();
+            int removeCustomer = statement.executeUpdate(sql);
+            if (removeCustomer == 1) {
+                System.out.println("Congrats, You've updated a customer successfully!!!!!");
+            } // end if
+        } catch(SQLException e) {
+            System.out.println("Error with your SQL");
+        } // end try/catch
     } // end customerDeleteHandler
 
     @FXML
