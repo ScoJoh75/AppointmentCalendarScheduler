@@ -17,9 +17,11 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.ZonedDateTime;
 import java.util.ResourceBundle;
 
 import static viewcontroller.AddModCustomerScreen.allLocations;
+import static viewcontroller.LoginScreen.consultant;
 
 public class MainMenu implements Initializable {
 
@@ -39,11 +41,12 @@ public class MainMenu implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        welcomeLabel.setText("Welcome " + LoginScreen.consultant.getUserName());
+        welcomeLabel.setText("Welcome " + consultant.getUserName());
         // Gets all Customers and Populates the AllCustomers list when the MainMenu loads for the first time
         if(allCustomers.getAllCustomers().size() == 0) {
             buildLocationList();
             buildCustomerList();
+            buildAppointmentList();
         } // end if
         // Checks for appointments in the next 15 minutes and posts an alert notification
         appointmentAlert.visibleProperty().setValue(false);
@@ -117,7 +120,7 @@ public class MainMenu implements Initializable {
     } // end buildCustomerList
 
     /**
-     * buildLocationList runs when the AddMod screen is loaded the first time. It creates an observable list for
+     * buildLocationList runs when the MainMenu screen is loaded the first time. It creates an observable list for
      * Cities and one for Countries. The lists are made up of Country and City objects respectively which contain
      * the database ID and name. The Country objects also contain the countryId to easily link them to their parent
      * country.
@@ -143,4 +146,45 @@ public class MainMenu implements Initializable {
             e.printStackTrace();
         } // end try/catch
     } // end buildLocationList
+
+    /**
+     * buildAppointmentList runs when the MainMenu screen is loaded the first time. It pulls data from the database and then
+     * tt creates an observable list for Appointments. This list is utilized by the AppointmentScreen
+     */
+    private void buildAppointmentList() {
+        try (Connection connection = DBConnection.dbConnect();
+             Statement statement = connection.createStatement()) {
+            String sql = "SELECT appointmentId, \n" +
+                    "customerId, \n" +
+                    "userId, \n" +
+                    "title, \n" +
+                    "description, \n" +
+                    "location,\n" +
+                    "contact,\n" +
+                    "type, \n" +
+                    "start, \n" +
+                    "end\n" +
+                    "FROM appointment\n" +
+                    "WHERE userId = " + consultant.getId() + "\n" +
+                    "ORDER BY appointmentId";
+            ResultSet results = statement.executeQuery(sql);
+            while (results.next()) {
+                int appointmentId = results.getInt("appointmentId");
+                int customerId = results.getInt("customerId");
+                int userId = results.getInt("userId");
+                String title = results.getString("title");
+                String description = results.getString("description");
+                String location = results.getString("location");
+                String contact = results.getString("contact");
+                String type = results.getString("type");
+                ZonedDateTime start = results.getDate("start");
+                ZonedDateTime end = results.getDate("end");
+
+
+            } // end while
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } // end try/catch
+    } // end buildAppointmentList
 } // end MainMenu

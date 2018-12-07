@@ -9,30 +9,33 @@ public class Appointment {
     private String title;
     private String description;
     private String location;
+    private String contact;
     private String type;
     private ZonedDateTime startTime;
     private ZonedDateTime endTime;
 
     public Appointment() {} // end default constructor
 
-    public Appointment(int customerId, int consultantId, String title, String description, String location, String type, ZonedDateTime startTime, int apptLength) {
+    public Appointment(int customerId, int consultantId, String title, String description, String location, String contact, String type, ZonedDateTime startTime, int apptLength) {
         this.customerId = customerId;
         this.consultantId = consultantId;
         this.title = title;
         this.description = description;
         this.location = location;
+        this.contact = contact;
         this.type = type;
         this.startTime = startTime;
         this.endTime = startTime.plusHours(apptLength);
     } // end constructor
 
-    public Appointment(int Id, int customerId, int consultantId, String title, String description, String location, String type, ZonedDateTime startTime, int apptLength) {
+    public Appointment(int Id, int customerId, int consultantId, String title, String description, String location, String contact, String type, ZonedDateTime startTime, int apptLength) {
         this.Id = Id;
         this.customerId = customerId;
         this.consultantId = consultantId;
         this.title = title;
         this.description = description;
         this.location = location;
+        this.contact = contact;
         this.type = type;
         this.startTime = startTime;
         this.endTime = startTime.plusHours(apptLength);
@@ -85,6 +88,14 @@ public class Appointment {
     public void setLocation(String location) {
         this.location = location;
     } // end setLocation
+
+    public String getContact() {
+        return contact;
+    } // end getContact
+
+    public void setContact(String contact) {
+        this.contact = contact;
+    } // end setContact;
 
     public String getType() {
         return type;
