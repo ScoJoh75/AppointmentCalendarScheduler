@@ -17,6 +17,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ResourceBundle;
 
@@ -38,6 +40,7 @@ public class MainMenu implements Initializable {
     private Label appointmentAlert;
 
     static AllCustomers allCustomers = new AllCustomers();
+    static AllAppointments allAppointments = new AllAppointments();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -177,12 +180,12 @@ public class MainMenu implements Initializable {
                 String location = results.getString("location");
                 String contact = results.getString("contact");
                 String type = results.getString("type");
-                ZonedDateTime start = results.getDate("start");
-                ZonedDateTime end = results.getDate("end");
-
-
+                LocalDateTime localStartTime = results.getObject("start", LocalDateTime.class);
+                ZonedDateTime start = ZonedDateTime.of(localStartTime, ZoneId.systemDefault());
+                LocalDateTime localEndTime = results.getObject("end", LocalDateTime.class);
+                ZonedDateTime end = ZonedDateTime.of(localEndTime, ZoneId.systemDefault());
+                allAppointments.addAppointment(new Appointment(appointmentId, customerId, userId, title, description, location, contact, type, start, end));
             } // end while
-
         } catch (SQLException e) {
             e.printStackTrace();
         } // end try/catch

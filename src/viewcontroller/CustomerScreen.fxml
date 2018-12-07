@@ -29,7 +29,7 @@
       </TableView>
       <Button fx:id="customerAdd" layoutX="346.0" layoutY="205.0" mnemonicParsing="false" onAction="#customerAddModHandler" text="Add" />
       <Button fx:id="customerUpdate" layoutX="402.0" layoutY="205.0" mnemonicParsing="false" onAction="#customerAddModHandler" text="Update" />
-      <Button fx:id="customerDelete" layoutX="478.0" layoutY="205.0" mnemonicParsing="false" onAction="#customerDeleteHandler" text="Delete" />
+      <Button layoutX="478.0" layoutY="205.0" mnemonicParsing="false" onAction="#customerDeleteHandler" text="Delete" />
    </AnchorPane>
    <Button fx:id="mainMenu" layoutX="462.0" layoutY="344.0" mnemonicParsing="false" onAction="#mainMenuHandler" prefHeight="31.0" prefWidth="100.0" text="Main Menu" />
 </AnchorPane>

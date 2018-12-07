@@ -20,7 +20,12 @@ public class AllCustomers {
     } // end removeCustomer
 
     public Customer getCustomer(int customerID) {
-        return allCustomers.get(customerID);
+        for(Customer customer : allCustomers) {
+            if(customerID == customer.getId()); {
+                return allCustomers.get(customerID);
+            } // end if
+        } // end for
+        return null;
     } // end getCustomer
 
     public ObservableList<Customer> getAllCustomers() {

@@ -7,20 +7,57 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import model.Appointment;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.ZonedDateTime;
 import java.util.ResourceBundle;
+
+import static viewcontroller.MainMenu.allAppointments;
+import static viewcontroller.MainMenu.allCustomers;
 
 public class AppointmentScreen implements Initializable {
 
     @FXML
     private Button mainMenuButton;
 
+    @FXML
+    private TableView<Appointment> appointmentTableView;
+
+    @FXML
+    private TableColumn<Appointment, ZonedDateTime> timeColumn;
+
+    @FXML
+    private TableColumn<Appointment, String> typeColumn;
+
+    @FXML
+    private TableColumn<Appointment, String> descriptionColumn;
+
+    @FXML
+    private TableColumn<Appointment, String> customerNameColumn;
+
+    @FXML
+    private TableColumn<Appointment, String> locationColumn;
+
+    @FXML
+    private TableColumn<Appointment, String> appointmentLengthColumn;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        timeColumn.setCellValueFactory(new PropertyValueFactory<>("startTime"));
+        typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
+        descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
+        customerNameColumn.setCellValueFactory(allCustomers.getCustomer(1).getCustomerName()));
+//        customerNameColumn.setCellValueFactory(new PropertyValueFactory<>(allCustomers.getCustomer("customerId").getCustomerName()));
+        locationColumn.setCellValueFactory(new PropertyValueFactory<>("location"));
+        appointmentLengthColumn.setCellValueFactory(new PropertyValueFactory<>("endTime"));
+        appointmentTableView.setItems(allAppointments.getAllAppointments());
+        appointmentTableView.getSelectionModel().select(0);
     }
 
     @FXML

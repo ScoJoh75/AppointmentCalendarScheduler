@@ -26,9 +26,9 @@ public class Appointment {
         this.type = type;
         this.startTime = startTime;
         this.endTime = startTime.plusHours(apptLength);
-    } // end constructor
+    } // end pre-database constructor
 
-    public Appointment(int Id, int customerId, int consultantId, String title, String description, String location, String contact, String type, ZonedDateTime startTime, int apptLength) {
+    public Appointment(int Id, int customerId, int consultantId, String title, String description, String location, String contact, String type, ZonedDateTime startTime, ZonedDateTime endTime) {
         this.Id = Id;
         this.customerId = customerId;
         this.consultantId = consultantId;
@@ -38,8 +38,8 @@ public class Appointment {
         this.contact = contact;
         this.type = type;
         this.startTime = startTime;
-        this.endTime = startTime.plusHours(apptLength);
-    } // end constructor
+        this.endTime = endTime;
+    } // end full constructor
 
     public int getId() {
         return Id;
