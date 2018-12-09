@@ -12,6 +12,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import model.Appointment;
+import model.Customer;
 
 import java.io.IOException;
 import java.net.URL;
@@ -19,6 +20,7 @@ import java.time.ZonedDateTime;
 import java.util.ResourceBundle;
 
 import static viewcontroller.MainMenu.allAppointments;
+import static viewcontroller.MainMenu.allCustomers;
 
 public class AppointmentScreen implements Initializable {
     @FXML
@@ -89,7 +91,8 @@ public class AppointmentScreen implements Initializable {
 
     @FXML
     public void viewCustomerHandler(ActionEvent actionEvent) {
-
+        Appointment appointment = appointmentTableView.getSelectionModel().getSelectedItem();
+        Customer customer = allCustomers.getCustomer(appointment.getCustomerId());
     }
 
     @FXML

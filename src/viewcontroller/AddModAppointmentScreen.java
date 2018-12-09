@@ -1,8 +1,11 @@
 package viewcontroller;
 
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import model.Appointment;
 
@@ -12,6 +15,17 @@ import static viewcontroller.MainMenu.allAppointments;
 import static viewcontroller.MainMenu.allCustomers;
 
 public class AddModAppointmentScreen {
+    @FXML
+    private Button cancelButton;
+
+    @FXML
+    private Button addModButton;
+
+    @FXML
+    private Label addModLabel;
+
+
+
     private Appointment appointment;
     private boolean modifying;
     private int index;
