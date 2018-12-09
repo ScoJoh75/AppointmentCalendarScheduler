@@ -19,9 +19,19 @@ import java.time.ZonedDateTime;
 import java.util.ResourceBundle;
 
 import static viewcontroller.MainMenu.allAppointments;
-import static viewcontroller.MainMenu.allCustomers;
 
 public class AppointmentScreen implements Initializable {
+    @FXML
+    private Button viewCustomer;
+
+    @FXML
+    private Button deleteAppointmentButton;
+
+    @FXML
+    private Button appointmentUpdate;
+
+    @FXML
+    private Button appointmentAdd;
 
     @FXML
     private Button mainMenuButton;
@@ -39,9 +49,6 @@ public class AppointmentScreen implements Initializable {
     private TableColumn<Appointment, String> descriptionColumn;
 
     @FXML
-    private TableColumn<Appointment, String> customerNameColumn;
-
-    @FXML
     private TableColumn<Appointment, String> locationColumn;
 
     @FXML
@@ -52,8 +59,6 @@ public class AppointmentScreen implements Initializable {
         timeColumn.setCellValueFactory(new PropertyValueFactory<>("startTime"));
         typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
-        customerNameColumn.setCellValueFactory(allCustomers.getCustomer(1).getCustomerName()));
-//        customerNameColumn.setCellValueFactory(new PropertyValueFactory<>(allCustomers.getCustomer("customerId").getCustomerName()));
         locationColumn.setCellValueFactory(new PropertyValueFactory<>("location"));
         appointmentLengthColumn.setCellValueFactory(new PropertyValueFactory<>("endTime"));
         appointmentTableView.setItems(allAppointments.getAllAppointments());
@@ -61,11 +66,34 @@ public class AppointmentScreen implements Initializable {
     }
 
     @FXML
-    void choiceHandler(ActionEvent event) throws IOException{
-        sceneChange();
+    void appointmentAddModHandler(ActionEvent actionEvent) throws IOException{
+        Stage stage;
+        Parent root;
+        stage = (Stage) appointmentAdd.getScene().getWindow();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("AddModAppointmentScreen.fxml"));
+        root = loader.load();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+        if(actionEvent.getSource() == appointmentUpdate) {
+            AddModAppointmentScreen controller = loader.getController();
+            Appointment appointment = appointmentTableView.getSelectionModel().getSelectedItem();
+            controller.setAppointment(appointment);
+        } // end if
     } // end choiceHandler
 
-    private void sceneChange() throws IOException {
+    @FXML
+    public void appointmentDeleteHandler(ActionEvent actionEvent) {
+
+    }
+
+    @FXML
+    public void viewCustomerHandler(ActionEvent actionEvent) {
+
+    }
+
+    @FXML
+    private void mainMenuHandler() throws IOException {
         Stage stage;
         Parent root;
         stage = (Stage) mainMenuButton.getScene().getWindow();
@@ -76,5 +104,6 @@ public class AppointmentScreen implements Initializable {
         stage.setScene(scene);
         stage.show();
     } // end sceneChange
+
 
 } // end AppointmentScreen

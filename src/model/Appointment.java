@@ -5,6 +5,7 @@ import java.time.ZonedDateTime;
 public class Appointment {
     private int Id;
     private int customerId;
+    private String customerName;
     private int consultantId;
     private String title;
     private String description;
@@ -16,8 +17,8 @@ public class Appointment {
 
     public Appointment() {} // end default constructor
 
-    public Appointment(int customerId, int consultantId, String title, String description, String location, String contact, String type, ZonedDateTime startTime, int apptLength) {
-        this.customerId = customerId;
+    public Appointment(int Id, int consultantId, String title, String description, String location, String contact, String type, ZonedDateTime startTime, int apptLength) {
+        this.customerId = Id;
         this.consultantId = consultantId;
         this.title = title;
         this.description = description;

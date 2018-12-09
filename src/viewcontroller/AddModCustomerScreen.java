@@ -252,7 +252,7 @@ public class AddModCustomerScreen implements Initializable {
         phoneField.setText(customer.getPhone());
         // determines the location in the AllCustomers array of the passed customer
         index = allCustomers.getAllCustomers().indexOf(customer);
-    } // end setPart
+    } // end setCustomer
 
     /**
      * sceneChange is just a simple method that brings you back to the CustomerScreen after Adding/Modding or just
