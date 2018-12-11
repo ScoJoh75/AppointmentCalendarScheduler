@@ -168,7 +168,7 @@ public class MainMenu implements Initializable {
                     "start, \n" +
                     "end\n" +
                     "FROM appointment\n" +
-                    "WHERE userId = " + consultant.getId() + "\n" +
+                    //"WHERE userId = " + consultant.getId() + "\n" +
                     "ORDER BY appointmentId";
             ResultSet results = statement.executeQuery(sql);
             while (results.next()) {

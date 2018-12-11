@@ -39,6 +39,9 @@ public class AddModAppointmentScreen implements Initializable {
     private DatePicker dateField;
 
     @FXML
+    private ComboBox<String> timeField;
+
+    @FXML
     private TextField descriptionField;
 
     @FXML
