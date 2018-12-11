@@ -21,6 +21,15 @@ import static viewcontroller.MainMenu.allCustomers;
 
 public class AddModAppointmentScreen implements Initializable {
     @FXML
+    private Spinner hourSpinner;
+
+    @FXML
+    private Spinner minuteSpinner;
+
+    @FXML
+    private ChoiceBox<String> ampmField;
+
+    @FXML
     private Button cancelButton;
 
     @FXML
@@ -30,10 +39,10 @@ public class AddModAppointmentScreen implements Initializable {
     private Label addModLabel;
 
     @FXML
-    private ComboBox<?> locationField;
+    private ComboBox<String> locationField;
 
     @FXML
-    private ComboBox<?> titleField;
+    private ChoiceBox<String> titleField;
 
     @FXML
     private DatePicker dateField;
@@ -48,7 +57,7 @@ public class AddModAppointmentScreen implements Initializable {
     private TableView<Customer> customerTableView;
 
     @FXML
-    private ComboBox<?> typeField;
+    private ChoiceBox<String> typeField;
 
     @FXML
     private TableColumn<Customer, String> customerCountryColumn;
@@ -60,7 +69,7 @@ public class AddModAppointmentScreen implements Initializable {
     private TableColumn<Customer, String> customerCityColumn;
 
     @FXML
-    private ComboBox<?> lengthField;
+    private ChoiceBox<String> lengthField;
 
     private Appointment appointment;
     private boolean modifying;
