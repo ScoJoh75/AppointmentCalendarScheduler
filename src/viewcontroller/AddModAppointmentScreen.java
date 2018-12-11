@@ -1,20 +1,25 @@
 package viewcontroller;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import model.Appointment;
+import model.Customer;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
 import static viewcontroller.MainMenu.allAppointments;
 import static viewcontroller.MainMenu.allCustomers;
 
-public class AddModAppointmentScreen {
+public class AddModAppointmentScreen implements Initializable {
     @FXML
     private Button cancelButton;
 
@@ -24,11 +29,53 @@ public class AddModAppointmentScreen {
     @FXML
     private Label addModLabel;
 
+    @FXML
+    private ComboBox<?> locationField;
 
+    @FXML
+    private ComboBox<?> titleField;
+
+    @FXML
+    private DatePicker dateField;
+
+    @FXML
+    private TextField descriptionField;
+
+    @FXML
+    private TableView<Customer> customerTableView;
+
+    @FXML
+    private ComboBox<?> typeField;
+
+    @FXML
+    private TableColumn<Customer, String> customerCountryColumn;
+
+    @FXML
+    private TableColumn<Customer, String> customerNameColumn;
+
+    @FXML
+    private TableColumn<Customer, String> customerCityColumn;
+
+    @FXML
+    private ComboBox<?> lengthField;
 
     private Appointment appointment;
     private boolean modifying;
     private int index;
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        customerNameColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
+        customerCityColumn.setCellValueFactory(new PropertyValueFactory<>("cityName"));
+        customerCountryColumn.setCellValueFactory(new PropertyValueFactory<>("countryName"));
+        customerTableView.setItems(allCustomers.getAllCustomers());
+        customerTableView.getSelectionModel().select(0);
+    }
+
+    @FXML
+    void addModAppointmentHandler(ActionEvent event) {
+
+    }
 
     /**
      * setAppointment is called when a user decides to update an existing appointment.
@@ -40,8 +87,8 @@ public class AddModAppointmentScreen {
     void setAppointment(Appointment appointment) {
         this.appointment = appointment;
         modifying = true;
-//        addModLabel.setText("Update Appointment");
-//        addModButton.setText("Update Appointment");
+        addModLabel.setText("Update Appointment");
+        addModButton.setText("Update Appointment");
         // Lines below set the on screen fields with the data in the passed customer object..
 //        customerNameField.setText(customer.getCustomerName());
 //        address1Field.setText(customer.getAddress1());
@@ -58,6 +105,7 @@ public class AddModAppointmentScreen {
      * sceneChange is just a simple method that brings you back to the AppointmentScreen after Adding/Modding or just
      * plain cancelling out of the AddMod screen.
      */
+    @FXML
     private void sceneChange() throws IOException {
         Stage stage;
         Parent root;

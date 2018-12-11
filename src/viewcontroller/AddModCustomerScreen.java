@@ -254,16 +254,45 @@ public class AddModCustomerScreen implements Initializable {
         index = allCustomers.getAllCustomers().indexOf(customer);
     } // end setCustomer
 
+    void viewCustomer(Customer customer) {
+        this.customer = customer;
+        addModLabel.setText("Customer Information");
+        addModButton.setVisible(false);
+        customerNameField.setText(customer.getCustomerName());
+        customerNameField.setEditable(false);
+        address1Field.setText(customer.getAddress1());
+        address1Field.setEditable(false);
+        address2Field.setText(customer.getAddress2());
+        address2Field.setEditable(false);
+        cityField.setValue(allLocations.getAllCities().get(customer.getCityId()-1));
+        cityField.setDisable(true);
+        countryField.setValue(allLocations.getAllCountries().get(customer.getCountryId()-1));
+        countryField.setDisable(true);
+        postalCodeField.setText(customer.getPostalCode());
+        postalCodeField.setEditable(false);
+        phoneField.setText(customer.getPhone());
+        phoneField.setEditable(false);
+        cancelButton.setText("Return to Appointments");
+    } // end viewCustomer
+
     /**
      * sceneChange is just a simple method that brings you back to the CustomerScreen after Adding/Modding or just
      * plain cancelling out of the AddMod screen.
      */
     private void sceneChange() throws IOException {
+        String destination;
         Stage stage;
         Parent root;
         stage = (Stage) addModButton.getScene().getWindow();
-        stage.setTitle("Customer Database");
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("CustomerScreen.fxml"));
+        // Determine the screen we're going back to
+        if(addModButton.isVisible()) {
+            destination = "CustomerScreen.fxml";
+            stage.setTitle("Customer Database");
+        } else {
+            destination = "AppointmentScreen.fxml";
+            stage.setTitle("Appointment Database");
+        } //end if
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(destination));
         root = loader.load();
         Scene scene = new Scene(root);
         stage.setScene(scene);

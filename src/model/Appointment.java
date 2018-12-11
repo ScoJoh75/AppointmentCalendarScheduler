@@ -2,6 +2,8 @@ package model;
 
 import java.time.ZonedDateTime;
 
+import static viewcontroller.MainMenu.allCustomers;
+
 public class Appointment {
     private int Id;
     private int customerId;
@@ -27,6 +29,7 @@ public class Appointment {
         this.type = type;
         this.startTime = startTime;
         this.endTime = startTime.plusHours(apptLength);
+        setCustomerName();
     } // end pre-database constructor
 
     public Appointment(int Id, int customerId, int consultantId, String title, String description, String location, String contact, String type, ZonedDateTime startTime, ZonedDateTime endTime) {
@@ -40,6 +43,7 @@ public class Appointment {
         this.type = type;
         this.startTime = startTime;
         this.endTime = endTime;
+        setCustomerName();
     } // end full constructor
 
     public int getId() {
@@ -121,4 +125,10 @@ public class Appointment {
     public void setEndTime(ZonedDateTime endTime) {
         this.endTime = endTime;
     } // end setEndTime
+
+    private void setCustomerName() {
+        this.customerName = allCustomers.getCustomer(customerId).getCustomerName();
+    } // end getCustomerName
+
+    public String getCustomerName() { return customerName;} // end getCustomerName
 } // end Appointment

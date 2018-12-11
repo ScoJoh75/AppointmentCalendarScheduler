@@ -39,7 +39,7 @@ public class MainMenu implements Initializable {
     @FXML
     private Label appointmentAlert;
 
-    static AllCustomers allCustomers = new AllCustomers();
+    public static AllCustomers allCustomers = new AllCustomers();
     static AllAppointments allAppointments = new AllAppointments();
 
     @Override

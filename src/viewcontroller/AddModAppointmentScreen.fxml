@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
@@ -7,26 +11,28 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="viewcontroller.AddModAppointmentScreen">
-    <Label fx:id="addModLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="99.0" layoutY="23.0" text="Add New Customer" textAlignment="CENTER">
-        <font>
-            <Font name="System Bold" size="22.0" />
-        </font>
-    </Label>
-    <Label layoutX="45.0" layoutY="85.0" text="Customer Name:" />
-    <TextField fx:id="customerNameField" layoutX="168.0" layoutY="80.0" prefHeight="25.0" prefWidth="187.0" />
-    <Label layoutX="56.0" layoutY="117.0" text="Address Line 1:" />
-    <TextField fx:id="address1Field" layoutX="168.0" layoutY="112.0" prefHeight="25.0" prefWidth="187.0" />
-    <Label layoutX="56.0" layoutY="149.0" text="Address Line 2:" />
-    <TextField fx:id="address2Field" layoutX="168.0" layoutY="144.0" prefHeight="25.0" prefWidth="187.0" />
-    <Label layoutX="114.0" layoutY="183.0" text="City:" />
-    <ComboBox fx:id="cityField" layoutX="168.0" layoutY="176.0" prefHeight="31.0" prefWidth="187.0" promptText="Choose a City" />
-    <Label layoutX="93.0" layoutY="218.0" text="Country:" />
-    <ComboBox fx:id="countryField" layoutX="168.0" layoutY="213.0" onAction="#countryChangeHandler" prefHeight="31.0" prefWidth="187.0" promptText="Choose a Country" />
-    <Label layoutX="74.0" layoutY="255.0" text="Postal Code:" />
-    <TextField fx:id="postalCodeField" layoutX="168.0" layoutY="250.0" prefHeight="25.0" prefWidth="187.0" />
-    <Label layoutX="107.0" layoutY="287.0" text="Phone:" />
-    <TextField fx:id="phoneField" layoutX="168.0" layoutY="282.0" prefHeight="25.0" prefWidth="187.0" />
-    <Button fx:id="addModButton" contentDisplay="CENTER" layoutX="239.0" layoutY="333.0" mnemonicParsing="false" onAction="#addModCustomerHandler" text="Add Customer" textAlignment="CENTER" />
-    <Button fx:id="cancelButton" contentDisplay="CENTER" layoutX="75.0" layoutY="333.0" mnemonicParsing="false" onAction="#addModCustomerHandler" text="Cancel" textAlignment="CENTER" />
+<AnchorPane prefHeight="400.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="viewcontroller.AddModAppointmentScreen">
+   <children>
+       <Label fx:id="addModLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="280.0" layoutY="24.0" text="Add New Appointment" textAlignment="CENTER">
+           <font>
+               <Font name="System Bold" size="22.0" />
+           </font>
+       </Label>
+       <TextField fx:id="descriptionField" layoutX="96.0" layoutY="124.0" prefHeight="25.0" prefWidth="187.0" promptText="Meeting Description" />
+       <ComboBox fx:id="typeField" layoutX="96.0" layoutY="190.0" prefHeight="31.0" prefWidth="187.0" promptText="Meeting Type" />
+       <Button fx:id="addModButton" contentDisplay="CENTER" layoutX="655.0" layoutY="349.0" mnemonicParsing="false" onAction="#addModAppointmentHandler" text="Add Meeting" textAlignment="CENTER" />
+       <Button fx:id="cancelButton" contentDisplay="CENTER" layoutX="43.0" layoutY="349.0" mnemonicParsing="false" onAction="#sceneChange" text="Cancel" textAlignment="CENTER" />
+      <ComboBox fx:id="titleField" layoutX="96.0" layoutY="92.0" prefHeight="31.0" prefWidth="187.0" promptText="Meeting Title" />
+      <ComboBox fx:id="locationField" layoutX="96.0" layoutY="156.0" prefHeight="31.0" prefWidth="187.0" promptText="Meeting Location" />
+      <DatePicker fx:id="dateField" layoutX="96.0" layoutY="227.0" promptText="Meeting Date" />
+      <ComboBox fx:id="lengthField" layoutX="96.0" layoutY="265.0" prefHeight="31.0" prefWidth="187.0" promptText="Meeting Length" />
+      <TableView fx:id="customerTableView" layoutX="400.0" layoutY="100.0" prefHeight="200.0" prefWidth="332.0">
+        <columns>
+          <TableColumn fx:id="customerNameColumn" prefWidth="137.0" text="Customer Name" />
+          <TableColumn fx:id="customerCityColumn" prefWidth="88.0" text="City" />
+            <TableColumn fx:id="customerCountryColumn" minWidth="0.0" prefWidth="106.0" text="Country" />
+        </columns>
+      </TableView>
+      <Label layoutX="490.0" layoutY="71.0" text="Select Customer Below" />
+   </children>
 </AnchorPane>
