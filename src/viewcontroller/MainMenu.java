@@ -1,5 +1,6 @@
 package viewcontroller;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -26,6 +27,9 @@ import static viewcontroller.AddModCustomerScreen.allLocations;
 import static viewcontroller.LoginScreen.consultant;
 
 public class MainMenu implements Initializable {
+
+    @FXML
+    public Button exitButton;
 
     @FXML
     private Label welcomeLabel;
@@ -190,4 +194,8 @@ public class MainMenu implements Initializable {
             e.printStackTrace();
         } // end try/catch
     } // end buildAppointmentList
+
+    public void exitHandler() {
+        Platform.exit();
+    } // end exitHandler
 } // end MainMenu

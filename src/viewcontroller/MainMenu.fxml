@@ -1,45 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="300.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="viewcontroller.MainMenu">
-    <Label fx:id="welcomeLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="25.0" layoutY="14.0"
-           prefHeight="30.0" prefWidth="350.0" text="Welcome Dave" textAlignment="CENTER">
+<AnchorPane prefHeight="300.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="viewcontroller.MainMenu">
+    <Label fx:id="welcomeLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="25.0" layoutY="14.0" prefHeight="30.0" prefWidth="350.0" text="Welcome Dave" textAlignment="CENTER">
         <font>
-            <Font name="System Bold" size="20.0"/>
+            <Font name="System Bold" size="20.0" />
         </font>
     </Label>
-    <Button fx:id="customerButton" alignment="CENTER" layoutX="130.0" layoutY="60.0" mnemonicParsing="false"
-            prefHeight="25.0" prefWidth="140.0" text="Manage Customers" textAlignment="RIGHT"
-            onAction="#choiceHandler">
+    <Button fx:id="customerButton" alignment="CENTER" layoutX="130.0" layoutY="60.0" mnemonicParsing="false" onAction="#choiceHandler" prefHeight="25.0" prefWidth="140.0" text="Manage Customers" textAlignment="RIGHT">
         <tooltip>
-            <Tooltip text="Add, Update, and Remove Customers"/>
+            <Tooltip text="Add, Update, and Remove Customers" />
         </tooltip>
     </Button>
-    <Button fx:id="appointmentButton" alignment="CENTER" layoutX="130.0" layoutY="100.0" mnemonicParsing="false"
-            prefHeight="25.0" prefWidth="140.0" text="Manage Appointments" textAlignment="RIGHT"
-            onAction="#choiceHandler">
+    <Button fx:id="appointmentButton" alignment="CENTER" layoutX="130.0" layoutY="100.0" mnemonicParsing="false" onAction="#choiceHandler" prefHeight="25.0" prefWidth="140.0" text="Manage Appointments" textAlignment="RIGHT">
         <tooltip>
-            <Tooltip text="Add, Update, and Delete Appointments"/>
+            <Tooltip text="Add, Update, and Delete Appointments" />
         </tooltip>
     </Button>
-    <Button fx:id="reportButton" alignment="CENTER" layoutX="130.0" layoutY="140.0" mnemonicParsing="false"
-            prefHeight="25.0" prefWidth="140.0" text="View Reports" textAlignment="RIGHT"
-            onAction="#choiceHandler">
+    <Button fx:id="reportButton" alignment="CENTER" layoutX="130.0" layoutY="140.0" mnemonicParsing="false" onAction="#choiceHandler" prefHeight="25.0" prefWidth="140.0" text="View Reports" textAlignment="RIGHT">
         <tooltip>
-            <Tooltip text="View Various Reports"/>
+            <Tooltip text="View Various Reports" />
         </tooltip>
     </Button>
-    <Label fx:id="appointmentAlert" alignment="CENTER" layoutX="110.0" layoutY="180.0"
-           prefHeight="90.0" prefWidth="180.0" style="-fx-border-color: red; -fx-border-radius: 10;"
-           text="This is a long label that has text that could possibly be long because it's going to be an alert about upcoming appointments."
-           wrapText="true">
+    <Label fx:id="appointmentAlert" alignment="CENTER" layoutX="110.0" layoutY="180.0" prefHeight="90.0" prefWidth="180.0" style="-fx-border-color: red; -fx-border-radius: 10;" text="This is a long label that has text that could possibly be long because it's going to be an alert about upcoming appointments." wrapText="true">
         <padding>
-            <Insets left="5.0"/>
+            <Insets left="5.0" />
         </padding>
     </Label>
+    <Button fx:id="exitButton" layoutX="323.0" layoutY="258.0" mnemonicParsing="false" onAction="#exitHandler" text="Exit" />
 </AnchorPane>
