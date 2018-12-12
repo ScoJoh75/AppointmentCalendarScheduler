@@ -1,5 +1,7 @@
 package viewcontroller;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -82,7 +84,21 @@ public class AddModAppointmentScreen implements Initializable {
         customerCountryColumn.setCellValueFactory(new PropertyValueFactory<>("countryName"));
         customerTableView.setItems(allCustomers.getAllCustomers());
         customerTableView.getSelectionModel().select(0);
+        setTimeSpinners();
     }
+
+    private void setTimeSpinners() {
+        ObservableList<String> hrs = FXCollections.observableArrayList("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12");
+        SpinnerValueFactory<String> hours = new SpinnerValueFactory.ListSpinnerValueFactory<String>(hrs);
+        hours.setWrapAround(true);
+        hourSpinner.setValueFactory(hours);
+        ObservableList<String> mins = FXCollections.observableArrayList("00", "15", "30", "45");
+        SpinnerValueFactory<String> minutes = new SpinnerValueFactory.ListSpinnerValueFactory<String>(mins);
+        minutes.setWrapAround(true);
+        minuteSpinner.setValueFactory(minutes);
+        ampmField.getItems().setAll("AM", "PM");
+        ampmField.setValue("AM");
+    } // end setTimeSpinners
 
     @FXML
     void addModAppointmentHandler(ActionEvent event) {
