@@ -25,9 +25,6 @@ import static viewcontroller.MainMenu.allCustomers;
 public class AppointmentScreen implements Initializable {
 
     @FXML
-    private Button deleteAppointmentButton;
-
-    @FXML
     private Button appointmentUpdate;
 
     @FXML
@@ -64,7 +61,7 @@ public class AppointmentScreen implements Initializable {
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
         locationColumn.setCellValueFactory(new PropertyValueFactory<>("location"));
         customerColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
-        appointmentLengthColumn.setCellValueFactory(new PropertyValueFactory<>("endTime"));
+        appointmentLengthColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentLength"));
         appointmentTableView.setItems(allAppointments.getAllAppointments());
         appointmentTableView.getSelectionModel().select(0);
     } // end initialize

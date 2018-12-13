@@ -16,11 +16,8 @@ import model.Customer;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.ResourceBundle;
-import java.util.function.ToDoubleBiFunction;
 
-import static java.time.temporal.ChronoUnit.MINUTES;
 import static viewcontroller.MainMenu.allAppointments;
 import static viewcontroller.MainMenu.allCustomers;
 
@@ -115,9 +112,9 @@ public class AddModAppointmentScreen implements Initializable {
 
         // set typeField Choice Box
         ObservableList<String> types = FXCollections.observableArrayList();
-        for (Appointment appointent : allAppointments.getAllAppointments()) {
-            if (!types.contains(appointent.getType())) {
-                types.add(appointent.getType());
+        for (Appointment appointment : allAppointments.getAllAppointments()) {
+            if (!types.contains(appointment.getType())) {
+                types.add(appointment.getType());
             } // end if
         } // end for
         typeField.setItems(types);
@@ -163,8 +160,11 @@ public class AddModAppointmentScreen implements Initializable {
         locationField.setValue(appointment.getLocation());
         typeField.setValue(appointment.getType());
         dateField.setValue(appointment.getStartTime().toLocalDate());
-        // TODO Add setting of Hour, Minute, and AMPM Fields
-        lengthField.setValue(String.valueOf(MINUTES.between(appointment.getStartTime().toLocalTime(), appointment.getEndTime().toLocalTime())));
+        int hour = appointment.getStartTime().toLocalTime().getHour();
+        hourSpinner.getValueFactory().setValue(String.valueOf(hour));
+        if(hour >= 12) ampmField.setValue("PM");
+        minuteSpinner.getValueFactory().setValue(String.valueOf(appointment.getStartTime().toLocalTime().getMinute()));
+        lengthField.setValue(appointment.getAppointmentLength());
         Customer customer = allCustomers.getCustomer(appointment.getCustomerId());
         customerTableView.getSelectionModel().select(customer);
         customerTableView.scrollTo(customer);

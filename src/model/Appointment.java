@@ -2,6 +2,7 @@ package model;
 
 import java.time.ZonedDateTime;
 
+import static java.time.temporal.ChronoUnit.MINUTES;
 import static viewcontroller.MainMenu.allCustomers;
 
 public class Appointment {
@@ -16,10 +17,11 @@ public class Appointment {
     private String type;
     private ZonedDateTime startTime;
     private ZonedDateTime endTime;
+    private String appointmentLength;
 
     public Appointment() {} // end default constructor
 
-    public Appointment(int Id, int consultantId, String title, String description, String location, String contact, String type, ZonedDateTime startTime, int apptLength) {
+    public Appointment(int Id, int consultantId, String title, String description, String location, String contact, String type, ZonedDateTime startTime, String appointmentLength) {
         this.customerId = Id;
         this.consultantId = consultantId;
         this.title = title;
@@ -28,7 +30,8 @@ public class Appointment {
         this.contact = contact;
         this.type = type;
         this.startTime = startTime;
-        this.endTime = startTime.plusHours(apptLength);
+        this.endTime = startTime.plusMinutes(Integer.valueOf(appointmentLength));
+        this.appointmentLength = appointmentLength;
         setCustomerName();
     } // end pre-database constructor
 
@@ -43,6 +46,7 @@ public class Appointment {
         this.type = type;
         this.startTime = startTime;
         this.endTime = endTime;
+        this.appointmentLength = String.valueOf(MINUTES.between(startTime.toLocalTime(), endTime.toLocalTime()));
         setCustomerName();
     } // end full constructor
 
@@ -125,6 +129,14 @@ public class Appointment {
     public void setEndTime(ZonedDateTime endTime) {
         this.endTime = endTime;
     } // end setEndTime
+
+    public String getAppointmentLength() {
+        return appointmentLength;
+    } // end getAppointmentLength
+
+    public void setAppointmentLength(String appointmentLength) {
+        this.appointmentLength = appointmentLength;
+    } // end setAppointmentLength
 
     private void setCustomerName() {
         this.customerName = allCustomers.getCustomer(customerId).getCustomerName();
