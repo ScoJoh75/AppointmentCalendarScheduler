@@ -94,7 +94,7 @@ public class AddModAppointmentScreen implements Initializable {
         SpinnerValueFactory<String> hours = new SpinnerValueFactory.ListSpinnerValueFactory<>(hrs);
         hours.setWrapAround(true);
         hourSpinner.setValueFactory(hours);
-        hourSpinner.getValueFactory().setValue("9");
+        hourSpinner.getValueFactory().setValue("09");
         ObservableList<String> mins = FXCollections.observableArrayList("00", "15", "30", "45");
         SpinnerValueFactory<String> minutes = new SpinnerValueFactory.ListSpinnerValueFactory<>(mins);
         minutes.setWrapAround(true);
@@ -154,7 +154,6 @@ public class AddModAppointmentScreen implements Initializable {
     private void addUpdateAppointment() {
         // Get values from fields
         int customerID = customerTableView.getSelectionModel().getSelectedItem().getId();
-        String customerName = customerTableView.getSelectionModel().getSelectedItem().getCustomerName();
         int conultantId = consultant.getId();
         String title = titleField.getValue();
         String description = descriptionField.getText();
@@ -171,6 +170,35 @@ public class AddModAppointmentScreen implements Initializable {
         System.out.println(startTime);
         //System.out.println("In UTC the same time is: " + startTime.withZoneSameInstant(ZoneOffset.UTC));
         System.out.println(endTime);
+
+        // create new appointment object if we're not modifying
+        if(!modifying) {
+            this.appointment = new Appointment();
+            appointment.setId(0);
+        } // end if
+
+        // Update appointment object with values from fields
+        appointment.setCustomerId(customerID);
+        appointment.setCustomerName();
+        appointment.setConsultantId(conultantId);
+        appointment.setTitle(title);
+        appointment.setDescription(description);
+        appointment.setLocation(location);
+        appointment.setContact(contact);
+        appointment.setType(type);
+        appointment.setAppointmentLength(appointmentLength);
+        appointment.setStartTime(startTime);
+        appointment.setEndTime(endTime);
+
+        // TODO Write code to insert/update data into database. if new, retrieve appointmentId and insert into appointment object
+
+
+        // Appointment object is inserted into the AllAppointment list replacing the old or adding as new.
+        if(modifying) {
+            allAppointments.updateAppointment(appointment, index);
+        } else {
+            allAppointments.addAppointment(appointment);
+        } // end if
 
     } // end addUpdateAppointment
 

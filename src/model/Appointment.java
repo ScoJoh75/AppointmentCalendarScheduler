@@ -138,7 +138,7 @@ public class Appointment {
         this.appointmentLength = appointmentLength;
     } // end setAppointmentLength
 
-    private void setCustomerName() {
+    public void setCustomerName() {
         this.customerName = allCustomers.getCustomer(customerId).getCustomerName();
     } // end getCustomerName
 

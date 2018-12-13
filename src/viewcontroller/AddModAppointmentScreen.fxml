@@ -40,5 +40,5 @@
         </columns>
     </TableView>
     <Button fx:id="addModButton" contentDisplay="CENTER" layoutX="493.0" layoutY="349.0" mnemonicParsing="false" onAction="#addModAppointmentHandler" text="Add Meeting" textAlignment="CENTER" />
-    <Button fx:id="cancelButton" contentDisplay="CENTER" layoutX="28.0" layoutY="349.0" mnemonicParsing="false" onAction="#sceneChange" text="Cancel" textAlignment="CENTER" />
+    <Button fx:id="cancelButton" contentDisplay="CENTER" layoutX="28.0" layoutY="349.0" mnemonicParsing="false" onAction="#addModAppointmentHandler" text="Cancel" textAlignment="CENTER" />
 </AnchorPane>

@@ -254,6 +254,12 @@ public class AddModCustomerScreen implements Initializable {
         index = allCustomers.getAllCustomers().indexOf(customer);
     } // end setCustomer
 
+    /**
+     * viewCustomer is called when a user clicks on the viewCustomer button in appointments.
+     * It populates the field with the customer information, but disables all fields for modification.
+     * TODO Possibly add the functionality to give the user the option to update a customers information
+     * @param customer
+     */
     void viewCustomer(Customer customer) {
         this.customer = customer;
         addModLabel.setText("Customer Information");
