@@ -16,8 +16,11 @@ import model.Customer;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
+import static viewcontroller.LoginScreen.consultant;
 import static viewcontroller.MainMenu.allAppointments;
 import static viewcontroller.MainMenu.allCustomers;
 
@@ -83,10 +86,11 @@ public class AddModAppointmentScreen implements Initializable {
         customerTableView.getSelectionModel().select(0);
         setTimeSpinners();
         setChoiceBoxes();
+        dateField.setValue(LocalDate.now());
     } // end initialize
 
     private void setTimeSpinners() {
-        ObservableList<String> hrs = FXCollections.observableArrayList("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12");
+        ObservableList<String> hrs = FXCollections.observableArrayList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12");
         SpinnerValueFactory<String> hours = new SpinnerValueFactory.ListSpinnerValueFactory<>(hrs);
         hours.setWrapAround(true);
         hourSpinner.setValueFactory(hours);
@@ -138,9 +142,37 @@ public class AddModAppointmentScreen implements Initializable {
     } // end setChoiceBoxes
 
     @FXML
-    void addModAppointmentHandler(ActionEvent event) {
-
+    void addModAppointmentHandler(ActionEvent actionEvent) throws IOException {
+        if (actionEvent.getSource() == cancelButton) {
+            sceneChange();
+        } else {
+            // validate appointment data, add to database, update appointment object and update arraylist.
+            addUpdateAppointment();
+        } // end if
     } // end addModAppointmentHandler
+
+    private void addUpdateAppointment() {
+        // Get values from fields
+        int customerID = customerTableView.getSelectionModel().getSelectedItem().getId();
+        String customerName = customerTableView.getSelectionModel().getSelectedItem().getCustomerName();
+        int conultantId = consultant.getId();
+        String title = titleField.getValue();
+        String description = descriptionField.getText();
+        String location = locationField.getValue();
+        String contact = consultant.getUserName();
+        String type = typeField.getValue();
+        String appointmentLength = lengthField.getValue();
+        LocalDate localDate = dateField.getValue();
+        LocalTime localTime = LocalTime.parse(hourSpinner.getValue() + ":" + minuteSpinner.getValue() + " " + ampmField.getValue(), DateTimeFormatter.ofPattern("hh:mm a"));
+        LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
+        ZonedDateTime startTime = ZonedDateTime.of(localDateTime, ZoneId.systemDefault());
+        ZonedDateTime endTime = startTime.plusMinutes(Integer.parseInt(appointmentLength));
+
+        System.out.println(startTime);
+        //System.out.println("In UTC the same time is: " + startTime.withZoneSameInstant(ZoneOffset.UTC));
+        System.out.println(endTime);
+
+    } // end addUpdateAppointment
 
     /**
      * setAppointment is called when a user decides to update an existing appointment.
