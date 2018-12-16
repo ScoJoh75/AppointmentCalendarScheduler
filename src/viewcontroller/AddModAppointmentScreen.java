@@ -13,11 +13,14 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import model.Appointment;
 import model.Customer;
+import model.DBConnection;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.*;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 import static viewcontroller.LoginScreen.consultant;
@@ -153,45 +156,68 @@ public class AddModAppointmentScreen implements Initializable {
 
     private void addUpdateAppointment() {
         // Get values from fields
-        int customerID = customerTableView.getSelectionModel().getSelectedItem().getId();
-        int conultantId = consultant.getId();
+        int customerID = customerTableView.getSelectionModel().getSelectedItem().getId() - 1;
+        int consultantId = consultant.getId();
         String title = titleField.getValue();
         String description = descriptionField.getText();
         String location = locationField.getValue();
         String contact = consultant.getUserName();
         String type = typeField.getValue();
         String appointmentLength = lengthField.getValue();
-        LocalDate localDate = dateField.getValue();
-        LocalTime localTime = LocalTime.parse(hourSpinner.getValue() + ":" + minuteSpinner.getValue() + " " + ampmField.getValue(), DateTimeFormatter.ofPattern("hh:mm a"));
-        LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
-        ZonedDateTime startTime = ZonedDateTime.of(localDateTime, ZoneId.systemDefault());
-        ZonedDateTime endTime = startTime.plusMinutes(Integer.parseInt(appointmentLength));
-
-        System.out.println(startTime);
-        //System.out.println("In UTC the same time is: " + startTime.withZoneSameInstant(ZoneOffset.UTC));
-        System.out.println(endTime);
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd kk:mm:ss.S a", Locale.US);
+        LocalDateTime localDateTime = LocalDateTime.parse(dateField.getValue() + " " + hourSpinner.getValue() + ":" + minuteSpinner.getValue() + ":00.0 " + ampmField.getValue(), df);
+        ZoneId localId = ZoneId.systemDefault();
+        ZonedDateTime localStartTime = localDateTime.atZone(localId);
+        ZonedDateTime localEndTime = localStartTime.plusMinutes(Integer.parseInt(appointmentLength));
 
         // create new appointment object if we're not modifying
         if(!modifying) {
             this.appointment = new Appointment();
-            appointment.setId(0);
         } // end if
 
         // Update appointment object with values from fields
         appointment.setCustomerId(customerID);
         appointment.setCustomerName();
-        appointment.setConsultantId(conultantId);
+        appointment.setConsultantId(consultantId);
         appointment.setTitle(title);
         appointment.setDescription(description);
         appointment.setLocation(location);
         appointment.setContact(contact);
         appointment.setType(type);
         appointment.setAppointmentLength(appointmentLength);
-        appointment.setStartTime(startTime);
-        appointment.setEndTime(endTime);
+        appointment.setStartTime(localStartTime);
+        appointment.setEndTime(localEndTime);
 
         // TODO Write code to insert/update data into database. if new, retrieve appointmentId and insert into appointment object
+        try (Connection connection = DBConnection.dbConnect()){
+            if(modifying) {
+                // update appointment table
+                String Sql = "UPDATE appointment " +
+                        "SET customerId = ?, userId = ?, title = ?, description = ?, location = ?, " +
+                        "contact = ?, type = ?, start = ?, end = ?, lastUpdateBy = ? WHERE appointmentId = ?";
+                PreparedStatement statement = connection.prepareStatement(Sql);
+                statement.setInt(1, customerID);
+                statement.setInt(2, consultantId);
+                statement.setString(3, title);
+                statement.setString(4, description);
+                statement.setString(5, location);
+                statement.setString(6,contact);
+                statement.setString(7, type);
+                statement.setObject(8, Timestamp.valueOf(localStartTime.toLocalDateTime()));
+                statement.setObject(9, Timestamp.valueOf(localEndTime.toLocalDateTime()));
+                statement.setString(10, contact);
+                statement.setInt(11, appointment.getId());
 
+                boolean appointmentUpdate = statement.execute();
+
+                System.out.println(appointmentUpdate);
+            } else {
+                System.out.println("Insert Statements Here!");
+            } // end if
+        } catch (SQLException e) {
+            System.out.println("Error with your SQL");
+            System.out.println(e.getMessage());
+        } // end try/catch
 
         // Appointment object is inserted into the AllAppointment list replacing the old or adding as new.
         if(modifying) {

@@ -14,11 +14,7 @@ import model.*;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.time.LocalDateTime;
+import java.sql.*;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ResourceBundle;
@@ -172,7 +168,7 @@ public class MainMenu implements Initializable {
                     "start, \n" +
                     "end\n" +
                     "FROM appointment\n" +
-                    //"WHERE userId = " + consultant.getId() + "\n" +
+                    "WHERE userId = " + consultant.getId() + "\n" +
                     "ORDER BY appointmentId";
             ResultSet results = statement.executeQuery(sql);
             while (results.next()) {
@@ -184,10 +180,13 @@ public class MainMenu implements Initializable {
                 String location = results.getString("location");
                 String contact = results.getString("contact");
                 String type = results.getString("type");
-                LocalDateTime localStartTime = results.getObject("start", LocalDateTime.class);
-                ZonedDateTime start = ZonedDateTime.of(localStartTime, ZoneId.systemDefault());
-                LocalDateTime localEndTime = results.getObject("end", LocalDateTime.class);
-                ZonedDateTime end = ZonedDateTime.of(localEndTime, ZoneId.systemDefault());
+
+                ZoneId localTimeZone = ZoneId.systemDefault();
+
+                Timestamp localStartTime = results.getTimestamp("start");
+                ZonedDateTime start = localStartTime.toLocalDateTime().atZone(localTimeZone);
+                Timestamp localEndTime = results.getTimestamp("end");
+                ZonedDateTime end = localEndTime.toLocalDateTime().atZone(localTimeZone);
                 allAppointments.addAppointment(new Appointment(appointmentId, customerId, userId, title, description, location, contact, type, start, end));
             } // end while
         } catch (SQLException e) {

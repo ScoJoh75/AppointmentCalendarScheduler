@@ -3,7 +3,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
+import java.time.ZoneId;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -13,7 +13,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
 
 //        Locale.setDefault(new Locale("es")); // Uncomment to change Default Locale for language testing.
-
+        System.out.println("Your current system ZoneId is: " + ZoneId.systemDefault());
         ResourceBundle rb = ResourceBundle.getBundle("languagefiles.Login", Locale.getDefault());
 
         Parent root = FXMLLoader.load(getClass().getResource("viewcontroller/LoginScreen.fxml"));
