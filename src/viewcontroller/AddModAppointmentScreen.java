@@ -93,11 +93,11 @@ public class AddModAppointmentScreen implements Initializable {
     } // end initialize
 
     private void setTimeSpinners() {
-        ObservableList<String> hrs = FXCollections.observableArrayList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12");
+        ObservableList<String> hrs = FXCollections.observableArrayList("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12");
         SpinnerValueFactory<String> hours = new SpinnerValueFactory.ListSpinnerValueFactory<>(hrs);
         hours.setWrapAround(true);
         hourSpinner.setValueFactory(hours);
-        hourSpinner.getValueFactory().setValue("09");
+        hourSpinner.getValueFactory().setValue("9");
         ObservableList<String> mins = FXCollections.observableArrayList("00", "15", "30", "45");
         SpinnerValueFactory<String> minutes = new SpinnerValueFactory.ListSpinnerValueFactory<>(mins);
         minutes.setWrapAround(true);
@@ -164,7 +164,7 @@ public class AddModAppointmentScreen implements Initializable {
         String contact = consultant.getUserName();
         String type = typeField.getValue();
         String appointmentLength = lengthField.getValue();
-        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd kk:mm:ss.S a", Locale.US);
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd K:mm:ss.S a");
         LocalDateTime localDateTime = LocalDateTime.parse(dateField.getValue() + " " + hourSpinner.getValue() + ":" + minuteSpinner.getValue() + ":00.0 " + ampmField.getValue(), df);
         ZoneId localId = ZoneId.systemDefault();
         ZonedDateTime localStartTime = localDateTime.atZone(localId);
@@ -208,14 +208,46 @@ public class AddModAppointmentScreen implements Initializable {
                 statement.setString(10, contact);
                 statement.setInt(11, appointment.getId());
 
-                boolean appointmentUpdate = statement.execute();
+                statement.executeUpdate();
 
-                System.out.println(appointmentUpdate);
+                sceneChange();
             } else {
-                System.out.println("Insert Statements Here!");
+                // Add a new appointment
+                String Sql = "INSERT INTO appointment (customerId, userId, title, description, location, contact, type, start, end, createDate, createdBy, lastUpdate, lastUpdateBy)" +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                PreparedStatement statement = connection.prepareStatement(Sql);
+                statement.setInt(1, customerID); //customerId
+                statement.setInt(2, consultantId); //userId
+                statement.setString(3, title); //title
+                statement.setString(4, description); //description
+                statement.setString(5, location); //location
+                statement.setString(6, contact); //contact
+                statement.setString(7, type); //type
+                statement.setObject(8, Timestamp.valueOf(localStartTime.toLocalDateTime())); //start
+                statement.setObject(9, Timestamp.valueOf(localEndTime.toLocalDateTime())); //end
+                statement.setObject(10, new Timestamp(System.currentTimeMillis())); // createDate
+                statement.setString(11, contact); //createdBy
+                statement.setObject(12, new Timestamp(System.currentTimeMillis())); //lastUpdate
+                statement.setString(13, contact); //lastUpdatedBy
+
+                statement.executeUpdate();
+
+                // Get new appointment Id for the inserted appointment
+                Sql = "SELECT MAX(appointmentId) FROM appointment WHERE customerId = ?";
+                statement = connection.prepareStatement(Sql);
+                statement.setInt(1, customerID);
+                ResultSet results = statement.executeQuery();
+                while(results.next()){
+                    int Id = results.getInt("MAX(appointmentId)");
+                    appointment.setId(Id);
+                } // end while
+
+                sceneChange();
             } // end if
         } catch (SQLException e) {
             System.out.println("Error with your SQL");
+            System.out.println(e.getMessage());
+        } catch (IOException e) {
             System.out.println(e.getMessage());
         } // end try/catch
 
