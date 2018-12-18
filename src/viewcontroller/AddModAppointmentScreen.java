@@ -156,7 +156,7 @@ public class AddModAppointmentScreen implements Initializable {
 
     private void addUpdateAppointment() {
         // Get values from fields
-        int customerID = customerTableView.getSelectionModel().getSelectedItem().getId() - 1;
+        int customerID = customerTableView.getSelectionModel().getSelectedItem().getId();
         int consultantId = consultant.getId();
         String title = titleField.getValue();
         String description = descriptionField.getText();
@@ -171,7 +171,7 @@ public class AddModAppointmentScreen implements Initializable {
         ZonedDateTime localEndTime = localStartTime.plusMinutes(Integer.parseInt(appointmentLength));
 
         // create new appointment object if we're not modifying
-        if(!modifying) {
+        if (!modifying) {
             this.appointment = new Appointment();
         } // end if
 
@@ -188,25 +188,26 @@ public class AddModAppointmentScreen implements Initializable {
         appointment.setStartTime(localStartTime);
         appointment.setEndTime(localEndTime);
 
-        // TODO Write code to insert/update data into database. if new, retrieve appointmentId and insert into appointment object
-        try (Connection connection = DBConnection.dbConnect()){
-            if(modifying) {
+        // TODO For future: clean up duplicate code by changing the order and layout of the SQL and Prepared Statements
+        try (Connection connection = DBConnection.dbConnect()) {
+            if (modifying) {
                 // update appointment table
                 String Sql = "UPDATE appointment " +
                         "SET customerId = ?, userId = ?, title = ?, description = ?, location = ?, " +
-                        "contact = ?, type = ?, start = ?, end = ?, lastUpdateBy = ? WHERE appointmentId = ?";
+                        "contact = ?, type = ?, start = ?, end = ?, lastUpdate = ?, lastUpdateBy = ? WHERE appointmentId = ?";
                 PreparedStatement statement = connection.prepareStatement(Sql);
                 statement.setInt(1, customerID);
                 statement.setInt(2, consultantId);
                 statement.setString(3, title);
                 statement.setString(4, description);
                 statement.setString(5, location);
-                statement.setString(6,contact);
+                statement.setString(6, contact);
                 statement.setString(7, type);
                 statement.setObject(8, Timestamp.valueOf(localStartTime.toLocalDateTime()));
                 statement.setObject(9, Timestamp.valueOf(localEndTime.toLocalDateTime()));
-                statement.setString(10, contact);
-                statement.setInt(11, appointment.getId());
+                statement.setObject(10, new Timestamp(System.currentTimeMillis()));
+                statement.setString(11, contact);
+                statement.setInt(12, appointment.getId());
 
                 statement.executeUpdate();
 
@@ -232,12 +233,12 @@ public class AddModAppointmentScreen implements Initializable {
 
                 statement.executeUpdate();
 
-                // Get new appointment Id for the inserted appointment
+                // Get appointment Id for the newly inserted appointment
                 Sql = "SELECT MAX(appointmentId) FROM appointment WHERE customerId = ?";
                 statement = connection.prepareStatement(Sql);
                 statement.setInt(1, customerID);
                 ResultSet results = statement.executeQuery();
-                while(results.next()){
+                while (results.next()) {
                     int Id = results.getInt("MAX(appointmentId)");
                     appointment.setId(Id);
                 } // end while
@@ -252,7 +253,7 @@ public class AddModAppointmentScreen implements Initializable {
         } // end try/catch
 
         // Appointment object is inserted into the AllAppointment list replacing the old or adding as new.
-        if(modifying) {
+        if (modifying) {
             allAppointments.updateAppointment(appointment, index);
         } else {
             allAppointments.addAppointment(appointment);
@@ -265,6 +266,7 @@ public class AddModAppointmentScreen implements Initializable {
      * The appointment selected in the appointment table will be passed into this method. Then
      * the values of the fields as they pertain to the appointment selected will be populated.
      * The 'modifying' variable which determines the behavior of the save button is set as well.
+     *
      * @param appointment the appointment selected in the appointment table when update was clicked.
      */
     void setAppointment(Appointment appointment) {
@@ -280,7 +282,7 @@ public class AddModAppointmentScreen implements Initializable {
         dateField.setValue(appointment.getStartTime().toLocalDate());
         int hour = appointment.getStartTime().toLocalTime().getHour();
         hourSpinner.getValueFactory().setValue(String.valueOf(hour));
-        if(hour >= 12) ampmField.setValue("PM");
+        if (hour >= 12) ampmField.setValue("PM");
         minuteSpinner.getValueFactory().setValue(String.valueOf(appointment.getStartTime().toLocalTime().getMinute()));
         lengthField.setValue(appointment.getAppointmentLength());
         Customer customer = allCustomers.getCustomer(appointment.getCustomerId());

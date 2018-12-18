@@ -19,7 +19,7 @@ public class AllAppointments {
     } // end removeAppointment
 
     public Appointment getAppointment(int appointmentId) {
-        return allAppointments.get(appointmentId);
+        return allAppointments.get(appointmentId - 1);
     } // end getAppointment
 
     public ObservableList<Appointment> getAllAppointments() {

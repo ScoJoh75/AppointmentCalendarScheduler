@@ -13,9 +13,13 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import model.Appointment;
 import model.Customer;
+import model.DBConnection;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.time.ZonedDateTime;
 import java.util.ResourceBundle;
 
@@ -84,9 +88,21 @@ public class AppointmentScreen implements Initializable {
     } // end choiceHandler
 
     @FXML
-    public void appointmentDeleteHandler(ActionEvent actionEvent) {
-
+    public void appointmentDeleteHandler() {
+        Appointment appointment = appointmentTableView.getSelectionModel().getSelectedItem();
+        try (Connection connection = DBConnection.dbConnect()) {
+            String Sql = "DELETE FROM appointment WHERE appointmentId = ?";
+            PreparedStatement statement = connection.prepareStatement(Sql);
+            statement.setInt(1, appointment.getId());
+            if(statement.executeUpdate() == 1) System.out.println("Appointment was removed from the Database");
+        } catch (
+    SQLException e) {
+        System.out.println("Error with your SQL");
+        System.out.println(e.getMessage());
     }
+
+        if(allAppointments.removeAppointment(appointment)) System.out.println("Appointment was removed from the List!");
+    } // end appointmentDeleteHandler
 
     @FXML
     public void viewCustomerHandler() throws IOException {

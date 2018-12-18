@@ -21,8 +21,8 @@ public class AllCustomers {
 
     public Customer getCustomer(int customerID) {
         for(Customer customer : allCustomers) {
-            if(customerID == customer.getId()); {
-                return allCustomers.get(customerID);
+            if(customerID == customer.getId()) {
+                return customer;
             } // end if
         } // end for
         return null;
