@@ -15,8 +15,10 @@ import model.*;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ResourceBundle;
 
 import static viewcontroller.AddModCustomerScreen.allLocations;
@@ -52,9 +54,12 @@ public class MainMenu implements Initializable {
             buildAppointmentList();
         } // end if
         // Checks for appointments in the next 15 minutes and posts an alert notification
-        appointmentAlert.visibleProperty().setValue(false);
+        checkAppointments();
     } // end initialize
 
+    /**
+     * ChoiceHandler simply checks to see which button is pressed and then opens the appropriate screen.
+     */
     public void choiceHandler(ActionEvent actionEvent) throws IOException {
         Stage stage;
         Parent root;
@@ -80,7 +85,13 @@ public class MainMenu implements Initializable {
         stage.show();
     } // end choiceHandler
 
+    /**
+     * buildCustomerList runs when the MainMenu screen is loaded the first time. It creates an observable list for
+     * all the active customers in the database. The list contains one customer object for each active customer in the
+     * database.
+     */
     private void buildCustomerList(){
+        // TODO Rebuild using prepared statements
         try (Connection connection = DBConnection.dbConnect();
             Statement statement = connection.createStatement()){
             String sql = "SELECT customer.customerId, \n" +
@@ -123,12 +134,13 @@ public class MainMenu implements Initializable {
     } // end buildCustomerList
 
     /**
-     * buildLocationList runs when the MainMenu screen is loaded the first time. It creates an observable list for
+     * buildLocationList runs when the MainMenu screen is loaded the first time. It creates two observable lists, one for
      * Cities and one for Countries. The lists are made up of Country and City objects respectively which contain
      * the database ID and name. The Country objects also contain the countryId to easily link them to their parent
      * country.
      */
     private void buildLocationList() {
+        // TODO Rebuild using prepared statements
         try (Connection connection = DBConnection.dbConnect();
              Statement statement = connection.createStatement()) {
             String sql = "SELECT countryId, country FROM country ORDER BY countryId ASC";
@@ -152,9 +164,10 @@ public class MainMenu implements Initializable {
 
     /**
      * buildAppointmentList runs when the MainMenu screen is loaded the first time. It pulls data from the database and then
-     * tt creates an observable list for Appointments. This list is utilized by the AppointmentScreen
+     * it creates an observable list for Appointments. This list is utilized by the AppointmentScreen
      */
     private void buildAppointmentList() {
+        // TODO Rebuild using prepared statements
         try (Connection connection = DBConnection.dbConnect();
              Statement statement = connection.createStatement()) {
             String sql = "SELECT appointmentId, \n" +
@@ -193,6 +206,27 @@ public class MainMenu implements Initializable {
             e.printStackTrace();
         } // end try/catch
     } // end buildAppointmentList
+
+    /**
+     * CheckAppointments runs when a user logs into the application or returns to the main menu.
+     * It checks through the appointment list to see if they have an appointments in the next 15 minutes
+     */
+    private void checkAppointments() {
+        for(Appointment appointment : allAppointments.getAllAppointments()) {
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime apptTime = appointment.getStartTime().toLocalDateTime();
+            long minutes = ChronoUnit.MINUTES.between(now, apptTime);
+            if(minutes <= 15 && minutes > 0) {
+                appointmentAlert.visibleProperty().setValue(true);
+                String alert = "You have an appointment in " + minutes +
+                        " minutes, with " + allCustomers.getCustomer(appointment.getCustomerId()).getCustomerName();
+                appointmentAlert.setText(alert);
+                break;
+            } else {
+                appointmentAlert.visibleProperty().setValue(false);
+            } // end if
+        } // end for
+    } // end checkAppointments
 
     public void exitHandler() {
         Platform.exit();
