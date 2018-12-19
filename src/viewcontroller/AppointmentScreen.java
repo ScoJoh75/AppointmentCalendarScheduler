@@ -1,6 +1,7 @@
 package viewcontroller;
 
 import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -22,7 +23,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
+import java.util.Comparator;
 import java.util.ResourceBundle;
 
 import static viewcontroller.MainMenu.allAppointments;
@@ -69,6 +70,7 @@ public class AppointmentScreen implements Initializable {
     // Using a Lambda to set the FilteredList Predicate makes the code far more efficient and compact.
     // Normally there is more code, an override and extra statements that need to be created and setup.
     private FilteredList<Appointment> filteredList = new FilteredList<>(allAppointments.getAllAppointments(), s -> true);
+    private SortedList<Appointment> sortedList = new SortedList<>(filteredList, Comparator.comparing(Appointment::getStartTime));
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -78,7 +80,7 @@ public class AppointmentScreen implements Initializable {
         locationColumn.setCellValueFactory(new PropertyValueFactory<>("location"));
         customerColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
         appointmentLengthColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentLength"));
-        appointmentTableView.setItems(filteredList);
+        appointmentTableView.setItems(sortedList);
         appointmentTableView.getSelectionModel().selectFirst();
     } // end initialize
 
@@ -101,19 +103,20 @@ public class AppointmentScreen implements Initializable {
 
     @FXML
     public void appointmentDeleteHandler() {
+        // TODO Make this an Pop-Up asking to confirm the deletion action
         Appointment appointment = appointmentTableView.getSelectionModel().getSelectedItem();
         try (Connection connection = DBConnection.dbConnect()) {
             String Sql = "DELETE FROM appointment WHERE appointmentId = ?";
             PreparedStatement statement = connection.prepareStatement(Sql);
             statement.setInt(1, appointment.getId());
             if(statement.executeUpdate() == 1) System.out.println("Appointment was removed from the Database");
-        } catch (
-    SQLException e) {
+        } catch (SQLException e) {
         System.out.println("Error with your SQL");
         System.out.println(e.getMessage());
-    }
+        } // end try/catch
 
         if(allAppointments.removeAppointment(appointment)) System.out.println("Appointment was removed from the List!");
+        // TODO Confirm the deletion.
     } // end appointmentDeleteHandler
 
     @FXML
@@ -162,5 +165,5 @@ public class AppointmentScreen implements Initializable {
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
-    } // end sceneChange
+    } // end mainMenuHandler
 } // end AppointmentScreen
