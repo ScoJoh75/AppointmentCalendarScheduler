@@ -186,6 +186,7 @@ public class AddModAppointmentScreen implements Initializable {
         appointment.setType(type);
         appointment.setAppointmentLength(appointmentLength);
         appointment.setStartTime(localStartTime);
+        appointment.setLocalStartTime();
         appointment.setEndTime(localEndTime);
 
         // TODO For future: clean up duplicate code by changing the order and layout of the SQL and Prepared Statements

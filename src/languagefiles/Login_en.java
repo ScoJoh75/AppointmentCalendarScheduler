@@ -8,7 +8,8 @@ public class Login_en extends ListResourceBundle {
                 { "loginTitle", "Please Log In!"},
                 { "loginLabel", "Username:" },
                 { "passwordLabel", "Password:" },
-                { "loginSubmit", "Log In" }
+                { "loginSubmit", "Log In" },
+                { "loginError", "Username or Password is incorrect!"}
         };
     }
 }

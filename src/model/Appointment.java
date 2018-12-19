@@ -1,6 +1,7 @@
 package model;
 
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static viewcontroller.MainMenu.allCustomers;
@@ -18,6 +19,7 @@ public class Appointment {
     private ZonedDateTime startTime;
     private ZonedDateTime endTime;
     private String appointmentLength;
+    private String localStartTime;
 
     public Appointment() {} // end default constructor
 
@@ -33,6 +35,7 @@ public class Appointment {
         this.endTime = startTime.plusMinutes(Integer.valueOf(appointmentLength));
         this.appointmentLength = appointmentLength;
         setCustomerName();
+        setLocalStartTime();
     } // end pre-database constructor
 
     public Appointment(int Id, int customerId, int consultantId, String title, String description, String location, String contact, String type, ZonedDateTime startTime, ZonedDateTime endTime) {
@@ -48,6 +51,7 @@ public class Appointment {
         this.endTime = endTime;
         this.appointmentLength = String.valueOf(MINUTES.between(startTime.toLocalTime(), endTime.toLocalTime()));
         setCustomerName();
+        setLocalStartTime();
     } // end full constructor
 
     public int getId() {
@@ -142,5 +146,16 @@ public class Appointment {
         this.customerName = allCustomers.getCustomer(customerId).getCustomerName();
     } // end getCustomerName
 
-    public String getCustomerName() { return customerName;} // end getCustomerName
+    public String getCustomerName() {
+        return customerName;
+    } // end getCustomerName
+
+    public void setLocalStartTime() {
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd - HH:mm");
+        this.localStartTime = startTime.toLocalDateTime().format(df);
+    }
+
+    public String getLocalStartTime() {
+        return localStartTime;
+    }
 } // end Appointment

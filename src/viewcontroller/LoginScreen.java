@@ -31,6 +31,8 @@ public class LoginScreen implements Initializable {
     private Label passwordLabel;
     @FXML
     private Button loginSubmit;
+    @FXML
+    private Label loginError;
 
     static Consultant consultant = new Consultant();
     private String password = "";
@@ -42,6 +44,7 @@ public class LoginScreen implements Initializable {
         loginLabel.setText(String.valueOf(rb.getObject("loginLabel")));
         passwordLabel.setText(String.valueOf(rb.getObject("passwordLabel")));
         loginSubmit.setText(String.valueOf(rb.getObject("loginSubmit")));
+        loginError.setText(String.valueOf(rb.getObject("loginError")));
     } // end initialize
 
     @FXML
@@ -67,6 +70,7 @@ public class LoginScreen implements Initializable {
 
         if(validated) {
             try {
+                loginError.setVisible(false);
                 loadMainMenu();
             } catch (IOException e) {
                 System.out.println("An error occurred when opening Main Menu!");
@@ -74,6 +78,7 @@ public class LoginScreen implements Initializable {
             } // end try
         } else {
             System.out.println("Ya UName or PWord be incorrect!!!");
+            loginError.setVisible(true);
         } // end if
     } // end processLogin
 

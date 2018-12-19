@@ -1,5 +1,6 @@
 package viewcontroller;
 
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,6 +21,7 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.ResourceBundle;
 
@@ -38,10 +40,16 @@ public class AppointmentScreen implements Initializable {
     private Button mainMenuButton;
 
     @FXML
+    private Button showWeekButton;
+
+    @FXML
+    private Button showMonthButton;
+
+    @FXML
     private TableView<Appointment> appointmentTableView;
 
     @FXML
-    private TableColumn<Appointment, ZonedDateTime> timeColumn;
+    private TableColumn<Appointment, String> timeColumn;
 
     @FXML
     private TableColumn<Appointment, String> typeColumn;
@@ -58,16 +66,20 @@ public class AppointmentScreen implements Initializable {
     @FXML
     private TableColumn<Appointment, String> appointmentLengthColumn;
 
+    // Using a Lambda to set the FilteredList Predicate makes the code far more efficient and compact.
+    // Normally there is more code, an override and extra statements that need to be created and setup.
+    private FilteredList<Appointment> filteredList = new FilteredList<>(allAppointments.getAllAppointments(), s -> true);
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        timeColumn.setCellValueFactory(new PropertyValueFactory<>("startTime"));
+        timeColumn.setCellValueFactory(new PropertyValueFactory<>("localStartTime"));
         typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
         locationColumn.setCellValueFactory(new PropertyValueFactory<>("location"));
         customerColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
         appointmentLengthColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentLength"));
-        appointmentTableView.setItems(allAppointments.getAllAppointments());
-        appointmentTableView.getSelectionModel().select(0);
+        appointmentTableView.setItems(filteredList);
+        appointmentTableView.getSelectionModel().selectFirst();
     } // end initialize
 
     @FXML
@@ -120,6 +132,24 @@ public class AppointmentScreen implements Initializable {
         Customer customer = allCustomers.getCustomer(appointment.getCustomerId());
         controller.viewCustomer(customer);
     } // end viewCustomerHandler
+
+    @FXML
+    // Using a Lambda to set the FilteredList Predicates makes the code far more efficient and compact.
+    // Normally there is more code, an override and extra statements that need to be created and setup.
+    private void filterListHandler(ActionEvent actionEvent) {
+        if(actionEvent.getSource() == showWeekButton) {
+            LocalDateTime weekFromNow = LocalDateTime.now().plusDays(7);
+            filteredList.setPredicate(s -> s.getStartTime().toLocalDateTime().isBefore(weekFromNow));
+            appointmentTableView.getSelectionModel().selectFirst();
+        } else if(actionEvent.getSource() == showMonthButton) {
+            LocalDateTime monthFromNow = LocalDateTime.now().plusMonths(1);
+            filteredList.setPredicate(s -> s.getStartTime().toLocalDateTime().isBefore(monthFromNow));
+            appointmentTableView.getSelectionModel().selectFirst();
+        } else {
+            filteredList.setPredicate(s -> true);
+            appointmentTableView.getSelectionModel().selectFirst();
+        } // end if
+    } // end filterListHandler
 
     @FXML
     private void mainMenuHandler() throws IOException {
