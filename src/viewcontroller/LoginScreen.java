@@ -13,9 +13,13 @@ import javafx.stage.Stage;
 import model.Consultant;
 import model.DBConnection;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.sql.*;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.ResourceBundle;
 
@@ -71,6 +75,7 @@ public class LoginScreen implements Initializable {
         if(validated) {
             try {
                 loginError.setVisible(false);
+                writeLog();
                 loadMainMenu();
             } catch (IOException e) {
                 System.out.println("An error occurred when opening Main Menu!");
@@ -81,6 +86,17 @@ public class LoginScreen implements Initializable {
             loginError.setVisible(true);
         } // end if
     } // end processLogin
+
+    private void writeLog() {
+        try (FileWriter file = new FileWriter("./src/logs/userlog.txt", true);
+        BufferedWriter writer = new BufferedWriter(file);
+        PrintWriter out = new PrintWriter(writer)) {
+            out.println(ZonedDateTime.now() + " - Consultant: " + consultant.getUserName() + " logged in.");
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        } // end try/catch
+    } // end writeLog
 
     private void loadMainMenu() throws IOException {
         Stage stage;
