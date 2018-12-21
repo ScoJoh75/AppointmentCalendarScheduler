@@ -8,10 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import model.*;
@@ -128,23 +125,33 @@ public class AddModCustomerScreen implements Initializable {
 
     /**
      * addUpdateCustomer is called when the user clicks the add/update button.
-     * It either updates an existing customer objects, or creates a new one by adding
+     * It either updates an existing customer object, or creates a new one and adds
      * the field values to the object. Then it connects to the database and either updates
-     * or inserts new values for the customer depending on the situation.
+     * or inserts the new values for the customer depending on the situation.
      */
     private void addUpdateCustomer() throws IOException {
         // Get values from fields
         String customerName = customerNameField.getText();
         String address1 = address1Field.getText();
         String address2 = address2Field.getText();
-        int cityId = cityField.getValue().getId();
-        String cityName = cityField.getValue().getName();
-        int countryId = countryField.getValue().getId();
-        String countryName = countryField.getValue().getName();
+        int cityId = 0;
+        String cityName = "";
+        if(cityField.getValue() != null) {
+            cityId = cityField.getValue().getId();
+            cityName = cityField.getValue().getName();
+        } // end if
+        int countryId = 0;
+        String countryName = "";
+        if(countryField.getValue() != null) {
+            countryId = countryField.getValue().getId();
+            countryName = countryField.getValue().getName();
+        } // end if
         String postalCode = postalCodeField.getText();
         String phone = phoneField.getText();
 
         // if adding a new customer, instantiate a new Customer object and set Id values
+        // TODO Long term: modify the way ID's are assigned to be similar to how appointment ID's are assigned,
+        //  rather than by the length of the array list which if customers are deleted could put things out of sync.
         if(!modifying) {
             this.customer = new Customer();
             int Id = allCustomers.getAllCustomers().size() + 1;
@@ -165,69 +172,81 @@ public class AddModCustomerScreen implements Initializable {
         customer.setPostalCode(postalCode);
         customer.setPhone(phone);
 
-        // Customer object is inserted into the AllCustomer list replacing the old or adding as new.
-        if(modifying) {
-            allCustomers.updateCustomer(customer, index);
-        } else {
-            allCustomers.addCustomer(customer);
-        } // end if
+        boolean valid = customer.validate();
 
-        // Updates existing database entries or adds new
-        try (Connection connection = DBConnection.dbConnect();
-             Statement statement = connection.createStatement()){
-            if(modifying) {
-                // Update customer table
-                String sql = "UPDATE customer " +
-                        "SET customerName = '" + customerName +
-                        "', lastUpdateBy = '" + consultant.getUserName() +
-                        "' WHERE customerId = " + customer.getId();
-                int customerUpdateSuccessful = statement.executeUpdate(sql);
-                // Update address table
-                sql = "UPDATE address " +
-                        "SET address = '" + address1 +
-                        "', address2 = '" + address2 +
-                        "', cityId = '" + cityId +
-                        "', postalCode = '" + postalCode +
-                        "', phone = '" + phone +
-                        "', lastUpdateBy = '" + consultant.getUserName() +
-                        "' WHERE addressId = " + customer.getAddressId();
-                int addressUpdateSuccessful = statement.executeUpdate(sql);
-                // check if updates were successful
-                if (customerUpdateSuccessful == 1 && addressUpdateSuccessful == 1) {
-                    System.out.println("Congrats, You've updated a customer successfully!!!!!");
-                } // end if
+        if(valid) {
+            // Customer object is inserted into the AllCustomer array list replacing the old or adding as new.
+            if (modifying) {
+                allCustomers.updateCustomer(customer, index);
             } else {
-                // Add data to Address table
-                String sql = "INSERT INTO address (address, address2, cityId, postalCode, phone, createDate, createdBy, lastUpdateBy) \n" +
-                        "VALUES ('" + address1 + "', \n" +
-                        "'" + address2 + "', \n" +
-                        cityId + ", \n" +
-                        "'" + postalCode + "', \n" +
-                        "'" + phone + "', \n" +
-                        "CURRENT_TIMESTAMP, \n" +
-                        "'" + consultant.getUserName() + "', \n" +
-                        "'" + consultant.getUserName() + "');";
-                int addressUpdateSuccessful = statement.executeUpdate(sql);
-               // Add data to Customer table
-                sql = "INSERT INTO customer (customerName, addressId, active, createDate, createdBy, lastUpdateBy) \n" +
-                        "VALUES ('" + customerName + "', \n" +
-                        customer.getAddressId() + ", \n" +
-                        "1, \n" +
-                        "CURRENT_TIMESTAMP, \n" +
-                        "'" + consultant.getUserName() + "', \n" +
-                        "'" + consultant.getUserName() + "');";
-                int customerUpdateSuccessful = statement.executeUpdate(sql);
-                // check if inserts were successful
-                if (customerUpdateSuccessful == 1 && addressUpdateSuccessful == 1) {
-                    System.out.println("Congrats, you've added a new customer successfully!!!!!");
-                } // end if
+                allCustomers.addCustomer(customer);
             } // end if
-        } catch(SQLException e) {
-            System.out.println("Error with your SQL");
-        } // end try/catch
 
-        // After update, return to the Customer Screen
-        sceneChange();
+            // Updates existing database entries or adds new
+            // TODO convert to prepared statements in this section
+            try (Connection connection = DBConnection.dbConnect();
+                 Statement statement = connection.createStatement()) {
+                if (modifying) {
+                    // Update customer table
+                    String sql = "UPDATE customer " +
+                            "SET customerName = '" + customerName +
+                            "', lastUpdateBy = '" + consultant.getUserName() +
+                            "' WHERE customerId = " + customer.getId();
+                    int customerUpdateSuccessful = statement.executeUpdate(sql);
+                    // Update address table
+                    sql = "UPDATE address " +
+                            "SET address = '" + address1 +
+                            "', address2 = '" + address2 +
+                            "', cityId = '" + cityId +
+                            "', postalCode = '" + postalCode +
+                            "', phone = '" + phone +
+                            "', lastUpdateBy = '" + consultant.getUserName() +
+                            "' WHERE addressId = " + customer.getAddressId();
+                    int addressUpdateSuccessful = statement.executeUpdate(sql);
+                    // check if updates were successful
+                    if (customerUpdateSuccessful == 1 && addressUpdateSuccessful == 1) {
+                        System.out.println("Congrats, You've updated a customer successfully!!!!!");
+                    } // end if
+                } else {
+                    // Add data to Address table
+                    String sql = "INSERT INTO address (address, address2, cityId, postalCode, phone, createDate, createdBy, lastUpdateBy) \n" +
+                            "VALUES ('" + address1 + "', \n" +
+                            "'" + address2 + "', \n" +
+                            cityId + ", \n" +
+                            "'" + postalCode + "', \n" +
+                            "'" + phone + "', \n" +
+                            "CURRENT_TIMESTAMP, \n" +
+                            "'" + consultant.getUserName() + "', \n" +
+                            "'" + consultant.getUserName() + "');";
+                    int addressUpdateSuccessful = statement.executeUpdate(sql);
+                    // Add data to Customer table
+                    sql = "INSERT INTO customer (customerName, addressId, active, createDate, createdBy, lastUpdateBy) \n" +
+                            "VALUES ('" + customerName + "', \n" +
+                            customer.getAddressId() + ", \n" +
+                            "1, \n" +
+                            "CURRENT_TIMESTAMP, \n" +
+                            "'" + consultant.getUserName() + "', \n" +
+                            "'" + consultant.getUserName() + "');";
+                    int customerUpdateSuccessful = statement.executeUpdate(sql);
+                    // check if inserts were successful
+                    if (customerUpdateSuccessful == 1 && addressUpdateSuccessful == 1) {
+                        System.out.println("Congrats, you've added a new customer successfully!!!!!");
+                    } // end if
+                } // end if
+            } catch (SQLException e) {
+                System.out.println("Error with your SQL");
+            } // end try/catch
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Customer Successfully Added!");
+            alert.setHeaderText(null);
+            alert.setContentText(customerName + " has been successfully added!");
+
+            alert.showAndWait();
+
+            // After update, return to the Customer Screen
+            sceneChange();
+        } // end if
     } // end addUpdateCustomer
 
     /**

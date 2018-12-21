@@ -70,6 +70,7 @@ public class AppointmentScreen implements Initializable {
     // Using a Lambda to set the FilteredList Predicate makes the code far more efficient and compact.
     // Normally there is more code, an override and extra statements that need to be created and setup.
     private FilteredList<Appointment> filteredList = new FilteredList<>(allAppointments.getAllAppointments(), s -> true);
+    // Also used a Lambda here to set the initial comparator for the SortedList.
     private SortedList<Appointment> sortedList = new SortedList<>(filteredList, Comparator.comparing(Appointment::getStartTime));
 
     @Override
@@ -137,8 +138,8 @@ public class AppointmentScreen implements Initializable {
     } // end viewCustomerHandler
 
     @FXML
-    // Using a Lambda to set the FilteredList Predicates makes the code far more efficient and compact.
-    // Normally there is more code, an override and extra statements that need to be created and setup.
+    // Using Lambdas to set the FilteredList Predicates makes the code far more efficient and compact.
+    // Normally there is more code, an overrides and extra statements that need to be created and setup.
     private void filterListHandler(ActionEvent actionEvent) {
         if(actionEvent.getSource() == showWeekButton) {
             LocalDateTime weekFromNow = LocalDateTime.now().plusDays(7);

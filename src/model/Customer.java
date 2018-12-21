@@ -1,5 +1,7 @@
 package model;
 
+import javafx.scene.control.Alert;
+
 public class Customer {
     private int Id;
     private String customerName;
@@ -137,4 +139,28 @@ public class Customer {
     public void setCountryName(String countryName) {
         this.countryName = countryName;
     }
+
+    public boolean validate() {
+        boolean valid = false;
+        StringBuilder validalert = new StringBuilder();
+        if(customerName.equals("")) validalert.append("Customer Name can not be blank.\n");
+        if(address1.equals("")) validalert.append("Address Line 1 can not be blank.\n");
+        if(postalCode.equals("")) validalert.append("Postal Code can not be blank.\n");
+        if(phone.equals("")) validalert.append("Phone Number can not be blank.\n");
+        if(cityId == 0) validalert.append("A City must be chosen.\n");
+        if(countryId == 0) validalert.append("A country must be chosen.\n");
+
+        if(validalert.length() != 0) {
+            validalert.append("Please review and correct the problems listed.");
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("The customer can not be added!");
+            alert.setHeaderText(null);
+            alert.setContentText(validalert.toString());
+            alert.showAndWait();
+        } else {
+            valid = true;
+        } // end if
+
+        return valid;
+    } // end validate
 } // end Customer Class
