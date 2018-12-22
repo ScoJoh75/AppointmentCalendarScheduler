@@ -182,9 +182,11 @@ public class MainMenu implements Initializable {
                     "end\n" +
                     "FROM appointment, customer \n" +
                     "WHERE userId = " + consultant.getId() + " AND\n" +
-                    "appointment.customerId = customer.customerid AND \n" +
-                    "customer.active = 1\n" +
+                    "appointment.customerId = customer.customerid AND\n" +
+                    "customer.active = 1 \n" +
                     "ORDER BY start";
+
+            System.out.println(sql);
             ResultSet results = statement.executeQuery(sql);
             while (results.next()) {
                 int appointmentId = results.getInt("appointmentId");
@@ -202,10 +204,12 @@ public class MainMenu implements Initializable {
                 ZonedDateTime start = localStartTime.toLocalDateTime().atZone(localTimeZone);
                 Timestamp localEndTime = results.getTimestamp("end");
                 ZonedDateTime end = localEndTime.toLocalDateTime().atZone(localTimeZone);
-                allAppointments.addAppointment(new Appointment(appointmentId, customerId, userId, title, description, location, contact, type, start, end));
+                if(ZonedDateTime.now().isBefore(start)) {
+                    allAppointments.addAppointment(new Appointment(appointmentId, customerId, userId, title, description, location, contact, type, start, end));
+                }
             } // end while
         } catch (SQLException e) {
-            e.printStackTrace();
+            e.getMessage();
         } // end try/catch
     } // end buildAppointmentList
 
