@@ -277,7 +277,7 @@ public class AddModCustomerScreen implements Initializable {
      * viewCustomer is called when a user clicks on the viewCustomer button in appointments.
      * It populates the field with the customer information, but disables all fields for modification.
      * TODO Possibly add the functionality to give the user the option to update a customers information
-     * @param customer
+     * @param customer customer object to be viewed.
      */
     void viewCustomer(Customer customer) {
         this.customer = customer;

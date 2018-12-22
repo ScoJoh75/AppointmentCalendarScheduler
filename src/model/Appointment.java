@@ -151,7 +151,7 @@ public class Appointment {
     } // end getCustomerName
 
     public void setLocalStartTime() {
-        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd - HH:mm");
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd - hh:mm a");
         this.localStartTime = startTime.toLocalDateTime().format(df);
     }
 

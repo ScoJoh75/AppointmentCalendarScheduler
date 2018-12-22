@@ -171,7 +171,7 @@ public class MainMenu implements Initializable {
         try (Connection connection = DBConnection.dbConnect();
              Statement statement = connection.createStatement()) {
             String sql = "SELECT appointmentId, \n" +
-                    "customerId, \n" +
+                    "customer.customerId, \n" +
                     "userId, \n" +
                     "title, \n" +
                     "description, \n" +
@@ -180,8 +180,10 @@ public class MainMenu implements Initializable {
                     "type, \n" +
                     "start, \n" +
                     "end\n" +
-                    "FROM appointment\n" +
-                    "WHERE userId = " + consultant.getId() + "\n" +
+                    "FROM appointment, customer \n" +
+                    "WHERE userId = " + consultant.getId() + " AND\n" +
+                    "appointment.customerId = customer.customerid AND \n" +
+                    "customer.active = 1\n" +
                     "ORDER BY start";
             ResultSet results = statement.executeQuery(sql);
             while (results.next()) {

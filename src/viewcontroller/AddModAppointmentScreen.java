@@ -35,7 +35,7 @@ public class AddModAppointmentScreen implements Initializable {
     private Spinner<String> minuteSpinner;
 
     @FXML
-    private ChoiceBox<String> ampmField;
+    private Label ampmLabel;
 
     @FXML
     private Button cancelButton;
@@ -90,20 +90,25 @@ public class AddModAppointmentScreen implements Initializable {
         setTimeSpinners();
         setChoiceBoxes();
         dateField.setValue(LocalDate.now());
+        hourSpinner.getEditor().textProperty().addListener((obs, oldValue, newValue) -> {
+            if (newValue.equals("09") || newValue.equals("10") || newValue.equals("11")) {
+                ampmLabel.setText("AM");
+            } else {
+                ampmLabel.setText("PM");
+            } // end if
+        });
     } // end initialize
 
     private void setTimeSpinners() {
-        ObservableList<String> hrs = FXCollections.observableArrayList("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12");
+        ObservableList<String> hrs = FXCollections.observableArrayList("09", "10", "11", "12", "01", "02", "03", "04", "05");
         SpinnerValueFactory<String> hours = new SpinnerValueFactory.ListSpinnerValueFactory<>(hrs);
         hours.setWrapAround(true);
         hourSpinner.setValueFactory(hours);
-        hourSpinner.getValueFactory().setValue("9");
+        hourSpinner.getValueFactory().setValue("09");
         ObservableList<String> mins = FXCollections.observableArrayList("00", "15", "30", "45");
         SpinnerValueFactory<String> minutes = new SpinnerValueFactory.ListSpinnerValueFactory<>(mins);
         minutes.setWrapAround(true);
         minuteSpinner.setValueFactory(minutes);
-        ampmField.getItems().setAll("AM", "PM");
-        ampmField.setValue("AM");
     } // end setTimeSpinners
 
     private void setChoiceBoxes() {
@@ -154,7 +159,7 @@ public class AddModAppointmentScreen implements Initializable {
         } // end if
     } // end addModAppointmentHandler
 
-    private void addUpdateAppointment() {
+    private void addUpdateAppointment() throws IOException{
         // Get values from fields
         int customerID = customerTableView.getSelectionModel().getSelectedItem().getId();
         int consultantId = consultant.getId();
@@ -164,8 +169,8 @@ public class AddModAppointmentScreen implements Initializable {
         String contact = consultant.getUserName();
         String type = typeField.getValue();
         String appointmentLength = lengthField.getValue();
-        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd K:mm:ss.S a");
-        LocalDateTime localDateTime = LocalDateTime.parse(dateField.getValue() + " " + hourSpinner.getValue() + ":" + minuteSpinner.getValue() + ":00.0 " + ampmField.getValue(), df);
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss.S a");
+        LocalDateTime localDateTime = LocalDateTime.parse(dateField.getValue() + " " + hourSpinner.getValue() + ":" + minuteSpinner.getValue() + ":00.0 " + ampmLabel.getText(), df);
         ZoneId localId = ZoneId.systemDefault();
         ZonedDateTime localStartTime = localDateTime.atZone(localId);
         ZonedDateTime localEndTime = localStartTime.plusMinutes(Integer.parseInt(appointmentLength));
@@ -211,8 +216,6 @@ public class AddModAppointmentScreen implements Initializable {
                 statement.setInt(12, appointment.getId());
 
                 statement.executeUpdate();
-
-                sceneChange();
             } else {
                 // Add a new appointment
                 String Sql = "INSERT INTO appointment (customerId, userId, title, description, location, contact, type, start, end, createDate, createdBy, lastUpdate, lastUpdateBy)" +
@@ -243,13 +246,9 @@ public class AddModAppointmentScreen implements Initializable {
                     int Id = results.getInt("MAX(appointmentId)");
                     appointment.setId(Id);
                 } // end while
-
-                sceneChange();
             } // end if
         } catch (SQLException e) {
             System.out.println("Error with your SQL");
-            System.out.println(e.getMessage());
-        } catch (IOException e) {
             System.out.println(e.getMessage());
         } // end try/catch
 
@@ -259,6 +258,16 @@ public class AddModAppointmentScreen implements Initializable {
         } else {
             allAppointments.addAppointment(appointment);
         } // end if
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Appointment Successfully Added!");
+        alert.setHeaderText(null);
+        alert.setContentText("Appointment on: " + appointment.getLocalStartTime().substring(0,10) + "\n" +
+                "at: " + appointment.getLocalStartTime().substring(13) + "\n" +
+                " with: " + appointment.getCustomerName() + " has been successfully added!");
+        alert.showAndWait();
+
+        sceneChange();
 
     } // end addUpdateAppointment
 
@@ -281,10 +290,11 @@ public class AddModAppointmentScreen implements Initializable {
         locationField.setValue(appointment.getLocation());
         typeField.setValue(appointment.getType());
         dateField.setValue(appointment.getStartTime().toLocalDate());
-        int hour = appointment.getStartTime().toLocalTime().getHour();
-        hourSpinner.getValueFactory().setValue(String.valueOf(hour));
-        if (hour >= 12) ampmField.setValue("PM");
-        minuteSpinner.getValueFactory().setValue(String.valueOf(appointment.getStartTime().toLocalTime().getMinute()));
+        String hour = appointment.getLocalStartTime().substring(13,15);
+        hourSpinner.getValueFactory().setValue(hour);
+        //if (hour >= 12) ampmLabel.setText("PM");
+        String minute = appointment.getLocalStartTime().substring(17,19);
+        minuteSpinner.getValueFactory().setValue(minute);
         lengthField.setValue(appointment.getAppointmentLength());
         Customer customer = allCustomers.getCustomer(appointment.getCustomerId());
         customerTableView.getSelectionModel().select(customer);

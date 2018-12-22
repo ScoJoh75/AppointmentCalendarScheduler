@@ -16,9 +16,9 @@
         </Label>
         <TableView fx:id="appointmentTableView" layoutX="16.0" layoutY="71.0" prefHeight="362.0" prefWidth="920.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0">
             <columns>
-                <TableColumn fx:id="timeColumn" prefWidth="123.20000839233398" resizable="false" text="Appointment Time" />
-                <TableColumn fx:id="typeColumn" prefWidth="120.80003356933594" resizable="false" text="Type" />
-                <TableColumn fx:id="descriptionColumn" prefWidth="338.39996337890625" resizable="false" text="Description" />
+                <TableColumn fx:id="timeColumn" prefWidth="143.99999618530273" resizable="false" text="Appointment Time" />
+                <TableColumn fx:id="typeColumn" prefWidth="133.6000518798828" resizable="false" text="Type" />
+                <TableColumn fx:id="descriptionColumn" prefWidth="307.20001220703125" resizable="false" text="Description" />
                 <TableColumn fx:id="locationColumn" prefWidth="123.0" resizable="false" text="Location" />
                 <TableColumn fx:id="customerColumn" editable="false" prefWidth="131.0" resizable="false" text="Customer Name" />
                 <TableColumn fx:id="appointmentLengthColumn" prefWidth="82.0" resizable="false" sortable="false" text="Length" />
