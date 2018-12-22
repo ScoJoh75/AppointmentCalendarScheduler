@@ -8,9 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import model.Appointment;
@@ -24,6 +22,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Comparator;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static viewcontroller.MainMenu.allAppointments;
@@ -104,20 +103,36 @@ public class AppointmentScreen implements Initializable {
 
     @FXML
     public void appointmentDeleteHandler() {
-        // TODO Make this an Pop-Up asking to confirm the deletion action
         Appointment appointment = appointmentTableView.getSelectionModel().getSelectedItem();
-        try (Connection connection = DBConnection.dbConnect()) {
-            String Sql = "DELETE FROM appointment WHERE appointmentId = ?";
-            PreparedStatement statement = connection.prepareStatement(Sql);
-            statement.setInt(1, appointment.getId());
-            if(statement.executeUpdate() == 1) System.out.println("Appointment was removed from the Database");
-        } catch (SQLException e) {
-        System.out.println("Error with your SQL");
-        System.out.println(e.getMessage());
-        } // end try/catch
 
-        if(allAppointments.removeAppointment(appointment)) System.out.println("Appointment was removed from the List!");
-        // TODO Confirm the deletion.
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("WARNING: Delete Appointment??");
+        alert.setHeaderText(null);
+        alert.setContentText("Are you sure you want to delete the appointment for " + appointment.getCustomerName() + "?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK){
+            try (Connection connection = DBConnection.dbConnect()) {
+                String Sql = "DELETE FROM appointment WHERE appointmentId = ?";
+                PreparedStatement statement = connection.prepareStatement(Sql);
+                statement.setInt(1, appointment.getId());
+
+                statement.executeUpdate();
+
+                if(allAppointments.removeAppointment(appointment)) {
+                    System.out.println("Appointment was removed from the List!");
+                    alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Appointment Successfully Removed!");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Appointment for: " + appointment.getCustomerName() + " has been successfully removed!");
+
+                    alert.showAndWait();
+                } // end if
+            } catch (SQLException e) {
+                System.out.println("Error with your SQL");
+                System.out.println(e.getMessage());
+            } // end try/catch
+        } // end if
     } // end appointmentDeleteHandler
 
     @FXML
