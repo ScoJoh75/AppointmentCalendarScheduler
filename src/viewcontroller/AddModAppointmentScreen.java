@@ -20,7 +20,6 @@ import java.net.URL;
 import java.sql.*;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 import static viewcontroller.LoginScreen.consultant;
@@ -146,7 +145,6 @@ public class AddModAppointmentScreen implements Initializable {
         // set lengthField Choice Box
         lengthField.setItems(FXCollections.observableArrayList("15", "30", "45", "60"));
         lengthField.setValue("60");
-
     } // end setChoiceBoxes
 
     @FXML
@@ -154,7 +152,6 @@ public class AddModAppointmentScreen implements Initializable {
         if (actionEvent.getSource() == cancelButton) {
             sceneChange();
         } else {
-            // validate appointment data, add to database, update appointment object and update arraylist.
             addUpdateAppointment();
         } // end if
     } // end addModAppointmentHandler
@@ -194,81 +191,83 @@ public class AddModAppointmentScreen implements Initializable {
         appointment.setLocalStartTime();
         appointment.setEndTime(localEndTime);
 
-        // TODO For future: clean up duplicate code by changing the order and layout of the SQL and Prepared Statements
-        try (Connection connection = DBConnection.dbConnect()) {
+        if(!allAppointments.checkOverlap(appointment)) {
+            // TODO For future: clean up duplicate code by changing the order and layout of the SQL and Prepared Statements
+            try (Connection connection = DBConnection.dbConnect()) {
+                if (modifying) {
+                    // update appointment table
+                    String Sql = "UPDATE appointment " +
+                            "SET customerId = ?, userId = ?, title = ?, description = ?, location = ?, " +
+                            "contact = ?, type = ?, start = ?, end = ?, lastUpdate = ?, lastUpdateBy = ? WHERE appointmentId = ?";
+                    PreparedStatement statement = connection.prepareStatement(Sql);
+                    statement.setInt(1, customerID);
+                    statement.setInt(2, consultantId);
+                    statement.setString(3, title);
+                    statement.setString(4, description);
+                    statement.setString(5, location);
+                    statement.setString(6, contact);
+                    statement.setString(7, type);
+                    statement.setObject(8, Timestamp.valueOf(localStartTime.toLocalDateTime()));
+                    statement.setObject(9, Timestamp.valueOf(localEndTime.toLocalDateTime()));
+                    statement.setObject(10, new Timestamp(System.currentTimeMillis()));
+                    statement.setString(11, contact);
+                    statement.setInt(12, appointment.getId());
+
+                    statement.executeUpdate();
+                } else {
+                    // Add a new appointment
+                    String Sql = "INSERT INTO appointment (customerId, userId, title, description, location, contact, type, start, end, createDate, createdBy, lastUpdate, lastUpdateBy)" +
+                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    PreparedStatement statement = connection.prepareStatement(Sql);
+                    statement.setInt(1, customerID); //customerId
+                    statement.setInt(2, consultantId); //userId
+                    statement.setString(3, title); //title
+                    statement.setString(4, description); //description
+                    statement.setString(5, location); //location
+                    statement.setString(6, contact); //contact
+                    statement.setString(7, type); //type
+                    statement.setObject(8, Timestamp.valueOf(localStartTime.toLocalDateTime())); //start
+                    statement.setObject(9, Timestamp.valueOf(localEndTime.toLocalDateTime())); //end
+                    statement.setObject(10, new Timestamp(System.currentTimeMillis())); // createDate
+                    statement.setString(11, contact); //createdBy
+                    statement.setObject(12, new Timestamp(System.currentTimeMillis())); //lastUpdate
+                    statement.setString(13, contact); //lastUpdatedBy
+
+                    statement.executeUpdate();
+
+                    // Get appointment Id for the newly inserted appointment
+                    Sql = "SELECT MAX(appointmentId) FROM appointment WHERE customerId = ?";
+                    statement = connection.prepareStatement(Sql);
+                    statement.setInt(1, customerID);
+                    ResultSet results = statement.executeQuery();
+                    while (results.next()) {
+                        int Id = results.getInt("MAX(appointmentId)");
+                        appointment.setId(Id);
+                    } // end while
+                } // end if
+            } catch (SQLException e) {
+                System.out.println("Error with your SQL");
+                System.out.println(e.getMessage());
+            } // end try/catch
+
+            // Appointment object is inserted into the AllAppointment list replacing the old or adding as new.
             if (modifying) {
-                // update appointment table
-                String Sql = "UPDATE appointment " +
-                        "SET customerId = ?, userId = ?, title = ?, description = ?, location = ?, " +
-                        "contact = ?, type = ?, start = ?, end = ?, lastUpdate = ?, lastUpdateBy = ? WHERE appointmentId = ?";
-                PreparedStatement statement = connection.prepareStatement(Sql);
-                statement.setInt(1, customerID);
-                statement.setInt(2, consultantId);
-                statement.setString(3, title);
-                statement.setString(4, description);
-                statement.setString(5, location);
-                statement.setString(6, contact);
-                statement.setString(7, type);
-                statement.setObject(8, Timestamp.valueOf(localStartTime.toLocalDateTime()));
-                statement.setObject(9, Timestamp.valueOf(localEndTime.toLocalDateTime()));
-                statement.setObject(10, new Timestamp(System.currentTimeMillis()));
-                statement.setString(11, contact);
-                statement.setInt(12, appointment.getId());
-
-                statement.executeUpdate();
+                allAppointments.updateAppointment(appointment, index);
             } else {
-                // Add a new appointment
-                String Sql = "INSERT INTO appointment (customerId, userId, title, description, location, contact, type, start, end, createDate, createdBy, lastUpdate, lastUpdateBy)" +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-                PreparedStatement statement = connection.prepareStatement(Sql);
-                statement.setInt(1, customerID); //customerId
-                statement.setInt(2, consultantId); //userId
-                statement.setString(3, title); //title
-                statement.setString(4, description); //description
-                statement.setString(5, location); //location
-                statement.setString(6, contact); //contact
-                statement.setString(7, type); //type
-                statement.setObject(8, Timestamp.valueOf(localStartTime.toLocalDateTime())); //start
-                statement.setObject(9, Timestamp.valueOf(localEndTime.toLocalDateTime())); //end
-                statement.setObject(10, new Timestamp(System.currentTimeMillis())); // createDate
-                statement.setString(11, contact); //createdBy
-                statement.setObject(12, new Timestamp(System.currentTimeMillis())); //lastUpdate
-                statement.setString(13, contact); //lastUpdatedBy
-
-                statement.executeUpdate();
-
-                // Get appointment Id for the newly inserted appointment
-                Sql = "SELECT MAX(appointmentId) FROM appointment WHERE customerId = ?";
-                statement = connection.prepareStatement(Sql);
-                statement.setInt(1, customerID);
-                ResultSet results = statement.executeQuery();
-                while (results.next()) {
-                    int Id = results.getInt("MAX(appointmentId)");
-                    appointment.setId(Id);
-                } // end while
+                allAppointments.addAppointment(appointment);
             } // end if
-        } catch (SQLException e) {
-            System.out.println("Error with your SQL");
-            System.out.println(e.getMessage());
-        } // end try/catch
 
-        // Appointment object is inserted into the AllAppointment list replacing the old or adding as new.
-        if (modifying) {
-            allAppointments.updateAppointment(appointment, index);
-        } else {
-            allAppointments.addAppointment(appointment);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Appointment Successfully Added!");
+            alert.setHeaderText(null);
+            alert.setContentText("Appointment with: " + appointment.getCustomerName() + "\n" +
+                    "on: " + appointment.getLocalStartTime().substring(0, 10) +
+                    " at: " + appointment.getLocalStartTime().substring(13) + "\n" +
+                    "Has been successfully added!");
+            alert.showAndWait();
+
+            sceneChange();
         } // end if
-
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Appointment Successfully Added!");
-        alert.setHeaderText(null);
-        alert.setContentText("Appointment on: " + appointment.getLocalStartTime().substring(0,10) + "\n" +
-                "at: " + appointment.getLocalStartTime().substring(13) + "\n" +
-                " with: " + appointment.getCustomerName() + " has been successfully added!");
-        alert.showAndWait();
-
-        sceneChange();
-
     } // end addUpdateAppointment
 
     /**
@@ -293,7 +292,8 @@ public class AddModAppointmentScreen implements Initializable {
         String hour = appointment.getLocalStartTime().substring(13,15);
         hourSpinner.getValueFactory().setValue(hour);
         //if (hour >= 12) ampmLabel.setText("PM");
-        String minute = appointment.getLocalStartTime().substring(17,19);
+        String minute = appointment.getLocalStartTime().substring(16,18);
+        System.out.println(minute);
         minuteSpinner.getValueFactory().setValue(minute);
         lengthField.setValue(appointment.getAppointmentLength());
         Customer customer = allCustomers.getCustomer(appointment.getCustomerId());

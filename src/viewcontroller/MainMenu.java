@@ -185,8 +185,6 @@ public class MainMenu implements Initializable {
                     "appointment.customerId = customer.customerid AND\n" +
                     "customer.active = 1 \n" +
                     "ORDER BY start";
-
-            System.out.println(sql);
             ResultSet results = statement.executeQuery(sql);
             while (results.next()) {
                 int appointmentId = results.getInt("appointmentId");
