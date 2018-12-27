@@ -74,7 +74,7 @@ public class MainMenu implements Initializable {
             choice = "AppointmentScreen";
             stage.setTitle("Appointment Database");
         } else {
-            choice = "ReportScreen";
+            choice = "ReportOutputScreen";
             stage.setTitle("System Reports");
         } // end if
 

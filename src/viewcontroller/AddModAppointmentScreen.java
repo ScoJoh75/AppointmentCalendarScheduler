@@ -293,7 +293,6 @@ public class AddModAppointmentScreen implements Initializable {
         hourSpinner.getValueFactory().setValue(hour);
         //if (hour >= 12) ampmLabel.setText("PM");
         String minute = appointment.getLocalStartTime().substring(16,18);
-        System.out.println(minute);
         minuteSpinner.getValueFactory().setValue(minute);
         lengthField.setValue(appointment.getAppointmentLength());
         Customer customer = allCustomers.getCustomer(appointment.getCustomerId());
