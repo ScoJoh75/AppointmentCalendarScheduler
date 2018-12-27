@@ -11,7 +11,7 @@
     <Button fx:id="reportBButton" layoutX="216.0" layoutY="14.0" mnemonicParsing="false" onAction="#runReportHandler"
             text="Appointments by Consultant"/>
     <Button fx:id="reportCButton" layoutX="384.0" layoutY="14.0" mnemonicParsing="false" onAction="#runReportHandler"
-            text="More Apointments" AnchorPane.rightAnchor="30.0"/>
+            text="Appointments by Customer" AnchorPane.rightAnchor="30.0"/>
     <TextArea fx:id="reportText" layoutX="14.0" layoutY="51.0" prefHeight="222.0" prefWidth="566.0"
               AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0"
               AnchorPane.topAnchor="50.0"/>

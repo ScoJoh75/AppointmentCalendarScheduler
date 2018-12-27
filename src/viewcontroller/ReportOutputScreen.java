@@ -46,14 +46,12 @@ public class ReportOutputScreen {
         if(actionEvent.getSource() == reportAButton) {
             reportText.clear();
             sql = "SELECT MONTH(start) AS Month, YEAR(start) AS Year, type AS Type, count(type) AS Total FROM appointment GROUP BY Type, Month ORDER BY Year, Month, Type, Month ASC\n";
-            reportText.appendText("Appointments by Type by Month\n");
         } else if (actionEvent.getSource() == reportBButton) {
             reportText.clear();
-            sql = "SELECT * FROM appointment ORDER BY userId, start\n";
-            reportText.appendText("Appointments by Consultant\n");
+            sql = "SELECT userId, contact, start, type, customerId FROM appointment ORDER BY userId, start\n";
         } else if (actionEvent.getSource() == reportCButton) {
             reportText.clear();
-            sql = "Third Option";
+            sql = "SELECT start, type, customerId FROM appointment ORDER BY customerId, start";
         } // end if
 
         try (Connection connection = DBConnection.dbConnect();
@@ -69,7 +67,7 @@ public class ReportOutputScreen {
                 while (results.next()) {
                     if(results.getInt("userId") != userId) {
                         userId = results.getInt("userId");
-                        reportText.appendText("Appointments for " + results.getString("contact") + "\n");
+                        reportText.appendText("Appointments for Consultant: " + results.getString("contact") + "\n");
                     } // end if
                     String line = results.getTimestamp("start") + " - " + results.getString("type") + " with " + allCustomers.getCustomer(results.getInt("customerId")).getCustomerName() + "\n";
                     if(results.getTimestamp("start").toLocalDateTime().isAfter(LocalDateTime.now())) {
@@ -77,7 +75,17 @@ public class ReportOutputScreen {
                     } // end if
                 } // end while
             } else if (actionEvent.getSource() == reportCButton) {
-
+                int customerId = 0;
+                while (results.next()) {
+                    String line = "     " + results.getString("type") + " on " + results.getTimestamp("start") + "\n";
+                    if(results.getTimestamp("start").toLocalDateTime().isAfter(LocalDateTime.now())) {
+                        if(results.getInt("customerId") != customerId) {
+                            customerId = results.getInt("customerId");
+                            reportText.appendText("Appointments for " + allCustomers.getCustomer(results.getInt("customerId")).getCustomerName() + "\n");
+                        } // end if
+                        reportText.appendText(line);
+                    } // end if
+                } // end while
             } // end if
         } catch (SQLException e) {
             e.printStackTrace();
