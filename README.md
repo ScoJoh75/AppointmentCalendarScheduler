@@ -6,5 +6,7 @@ This project required the use of an existing database and the databse structure 
 
 What I learned:
 Creating languge variants for language localization.
+
 Adjusting the display for local timezones.
+
 Basic login security and control for displaying data only for the logged in individual and their level of access.
